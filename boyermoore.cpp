@@ -28,6 +28,49 @@ ostream& operator <<(ostream &out, vector<T> v) {
     return out;
 }
 
+vector<int> badchar(string pat) {
+	vector<int> bc(256, -1);
+	for(int i = 0; i < pat.size(); ++i) {
+		int c = pat[i];
+		bc[c] = i;
+	}
+	return bc;
+}
+
+vector<int> goodsuffix(string pat) {
+	int m = pat.size();
+	int border = brd(pat).at(m);
+	vector<int> gs(m + 1, border);
+	string revpat = pat;
+	reverse(revpat.begin(), revpat.end());
+	vector<int> revbrd = brd(revpat);
+	for(int l = 1; l <= m; ++l) {
+		int j = m - 1 - revbrd[l];
+		gs[j + 1] = max(gs[j + 1], m - l + revbrd[l]);
+	}
+	return gs;
+}
+
+vector<int> boyermoore(string txt, string pat, vector<int> bc, vector<int> gs) {
+	int n = txt.size(),
+		m = pat.size();
+	vector<int> occ;
+	int i = 0;
+	while(i <= n - m) {
+		int j = m - 1;
+		while(j >= 0 && txt[i + j] == pat[j]) {
+			j -= 1;
+		}
+		if(j == -1) {
+			occ.push_back(i);
+			i += m - gs[0];
+		}
+		else {
+			i += max(j - bc[txt[i + j]], m - gs[j + 1]);
+		}
+	}
+	return occ;
+}
 
 int main() {
     string txt, pat;
@@ -35,3 +78,5 @@ int main() {
     cout << kmp(txt, pat, brd(pat)) << endl; 
     return 0;
 }
+
+
