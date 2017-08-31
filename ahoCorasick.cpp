@@ -5,8 +5,9 @@ using namespace std;
 class AhoCorasick
 {
 public:
-    AhoCorasick(vector<string> &p, string alpha)
+    AhoCorasick(vector<string> &p, string &alpha)
     {
+        this->alpha = alpha;
         hsh.resize(256);
         int i = 0;
         for(auto ch : alpha)
