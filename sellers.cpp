@@ -32,7 +32,40 @@ int sellers(const string &p, const string &t, vector<vector<int>> &memo, int i, 
     return memo[i][j];
 }
 
-
+void it_sellers(char *pat, char *txt, int r) {
+    int m = strlen(pat), n = strlen(txt);
+    int **mat = new int*[2];
+    for(int i = 0; i < 2; ++i) {
+        mat[i] = new int[m + 1];
+    }
+    
+    int old = 0, cur = 1;
+    for(int i = 0; i <= n; ++i)
+        mat[old][i] = 0;
+        
+    for(int i = 1; i <= m; ++i) {
+        mat[cur][0] = 0;
+        for(int j = 1; j <= n; ++j) {
+            mat[cur][j] = min(mat[cur][j - 1] + 1, mat[old][j] + 1);
+            mat[cur][j] = min(mat[cur][j], (pat[i - 1] != txt[j - 1]) + mat[old][j - 1]);
+        }
+        swap(cur, old);
+    }
+    
+    for(int j = 1; j <= n; ++j) {
+        if(mat[old][j] <= r) {
+            /*
+                reportar ocorrência terminando em j
+            */
+        }
+    }
+    
+    for(int i = 0; i < 2; ++i) {
+        delete[] mat[i];
+    }
+    
+    delete[] mat;
+}
 
 int main() {
     string s, t;
