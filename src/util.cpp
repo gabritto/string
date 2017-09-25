@@ -3,9 +3,9 @@
 #include "ahocorasick.hpp"
 
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
+#include <tuple>
 
 using namespace std;
 
@@ -34,24 +34,6 @@ static pair<vector<int>, int> getAlphabet(const string &pat) {
 }
 
 
-vector<string> getPatterns(const string &pat_filename) {
-  if(pat_filename == "") {
-    return vector<string>(); 
-  }
-  ifstream pat_file;
-  pat_file.open(pat_filename);
-  if(pat_file.fail()) {
-    printf("Invalid pattern file: %s\n", pat_filename.c_str());
-    exit(0);
-  }
-  string str;
-  vector<string> pat;
-  while(pat_file >> str) {
-    pat.push_back(str);
-  }
-  return pat;
-}
-
 static void processAho(const vector<string> &pats, ifstream &txt_file, bool count) {
   string txt;
   vector<int> alphabet_hash;
@@ -77,9 +59,28 @@ static void processAho(const vector<string> &pats, ifstream &txt_file, bool coun
 }
 
 
+vector<string> getPatterns(const string &pat_filename) {
+  if(pat_filename == "") {
+    return vector<string>(); 
+  }
+  ifstream pat_file;
+  pat_file.open(pat_filename);
+  if(pat_file.fail()) {
+    printf("Invalid pattern file: %s\n", pat_filename.c_str());
+    exit(0);
+  }
+  string str;
+  vector<string> pat;
+  while(pat_file >> str) {
+    pat.push_back(str);
+  }
+  return pat;
+}
+
+
 void processTxtFile(const vector<string> &pats, const string &txt_filename, const argument args) {
   ifstream txt_file;
-  cerr << txt_filename << endl;
+  printf("Processing file: %s\n", txt_filename.c_str());
   txt_file.open(txt_filename);
   if(txt_file.fail()) {
     printf("Invalid text file: %s\n", txt_filename.c_str());

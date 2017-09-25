@@ -15,3 +15,8 @@ util.o: util.cpp util.hpp
 
 ahocorasick.o: ahocorasick.cpp ahocorasick.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) ahocorasick.cpp
+
+clean:
+	rm -f *.o
+	rm -f *.exe
+	rm main
