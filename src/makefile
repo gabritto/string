@@ -1,10 +1,17 @@
+OBJS = main.cpp input.o util.o ahocorasick.o
 CC = g++
 CFLAGS = -Wall -c
 LFLAGS = -Wall
 VFLAGS = -std=c++11
 
-main: input.o
-	$(CC) $(LFLAGS) $(VFLAGS) input.o main.cpp -o main
+main: $(OBJS)
+	$(CC) $(LFLAGS) $(VFLAGS) $(OBJS) -o main
 
-input.o: input.cpp input.h
+input.o: input.cpp input.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) input.cpp
+
+util.o: util.cpp util.hpp
+	$(CC) $(CFLAGS) $(VFLAGS) util.cpp
+
+ahocorasick.o: ahocorasick.cpp ahocorasick.hpp
+	$(CC) $(CFLAGS) $(VFLAGS) ahocorasick.cpp

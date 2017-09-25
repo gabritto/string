@@ -1,8 +1,10 @@
-#include "input.h"
-
+#include "input.hpp"
 #include <getopt.h>
 #include <cstdio>
+#include <iostream>
 #include <algorithm>
+#include <vector>
+#include <string>
 
 using namespace std;
 
@@ -19,9 +21,8 @@ static const char *help_msg = "help";
 
 static const char *sopts = "e:p:a:ch";
 
-argument args;
 
-void getOptions(int argc, char *argv[]) {
+void getOptions(argument &args, int argc, char *argv[]) {
   int c;
   int idxptr;
 
@@ -54,10 +55,12 @@ void getOptions(int argc, char *argv[]) {
         abort();
     }
   }
+
+  
 }
 
 
-void getTxtFiles(int argc, char *argv[]) {
+void getTxtFiles(argument &args, int argc, char *argv[]) {
 
   for(int i = optind + 1; i < argc; ++i) { 
     args.txtfile.push_back(argv[i]);
@@ -66,8 +69,4 @@ void getTxtFiles(int argc, char *argv[]) {
   sort(args.txtfile.begin(), args.txtfile.end());
   auto it = unique(args.txtfile.begin(), args.txtfile.end());
   args.txtfile.resize(it - args.txtfile.begin());
-
-  for(string &s : args.txtfile) {
-    cout << s << endl;
-  }
 }

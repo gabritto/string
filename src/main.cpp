@@ -1,33 +1,31 @@
-#include <getopt.h>
 #include <cstring>
 #include <iostream>
 #include <cstdio>
 #include <vector>
-#include <algorithm>
-#include <dirent.h>
-#include <regex>
 #include <string>
+#include <getopt.h>
+#include "input.hpp"
+#include "util.hpp"
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-  getOptions(argc, argv);
+
+  argument args;
+  getOptions(args, argc, argv);
   if(argc - optind < 2) {
     printf("not enough arguments\n");
     exit(0);
   }
   args.pat = argv[optind];
-  getTxtFiles(argc, argv);
+  getTxtFiles(args, argc, argv);
 
-  if(args.e_max > 0 && args.algo != "" && args.algo != "se" && args.algo != "uk") {
-    printf("Algorithm not compatible with approximate matching.\n");
-    exit(0);
+  vector<string> pat = getPatterns(args.patfile);
+  pat.push_back(args.pat);
+
+  for(string &txtfile : args.txtfile) {
+    processTxtFile(pat, txtfile, args);
   }
 
-  if(args.algo != "") {
-    switch args.algo:
-      case "aho":
-        
-  }
   return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef INPUT_H
 #define INPUT_H
 
+using namespace std;
 #include <vector>
 #include <string>
 
@@ -17,7 +18,7 @@ struct argument {
 };
 
 
-void getOptions(int argc, char *argv[]);
-void getTxtFiles(int argc, char *argv[]);
+void getOptions(argument &args, int argc, char *argv[]);
+void getTxtFiles(argument &args, int argc, char *argv[]);
 
 #endif
