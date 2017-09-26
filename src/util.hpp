@@ -8,6 +8,8 @@
 using namespace std;
 
 vector<string> getPatterns(const string &file);
-void processTxtFile(const vector<string> &pats, const string &txt_filename, const argument args);
+void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filename, argument args);
+pair<vector<int>, int> getAlphabet(const vector<string> &pats);
+pair<vector<int>, int> getAlphabet(const string &pat);
 
 #endif

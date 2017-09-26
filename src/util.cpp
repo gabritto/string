@@ -9,7 +9,7 @@
 
 using namespace std;
 
-static pair<vector<int>, int> getAlphabet(const vector<string> &pats) {
+pair<vector<int>, int> getAlphabet(const vector<string> &pats) {
   int i = 1;
   vector<int> hsh(256, 0);
   for(string pat : pats) {
@@ -22,7 +22,7 @@ static pair<vector<int>, int> getAlphabet(const vector<string> &pats) {
   return {hsh, i};
 }
 
-static pair<vector<int>, int> getAlphabet(const string &pat) {
+pair<vector<int>, int> getAlphabet(const string &pat) {
   int i = 1;
   vector<int> hsh(256, 0);
   for(unsigned char ch : pat) {
@@ -34,17 +34,11 @@ static pair<vector<int>, int> getAlphabet(const string &pat) {
 }
 
 
-static void processAho(const vector<string> &pats, ifstream &txt_file, bool count) {
-  string txt;
-  vector<int> alphabet_hash;
-  int alphabet_size;
-  tie(alphabet_hash, alphabet_size) = getAlphabet(pats);
-  AhoFSM f(pats, alphabet_hash, alphabet_size);
-
+static void processAho(ifstream &txt_file, bool count) {
   int line_count = 0, occ_count = 0;
-
+  string txt;
   while(getline(txt_file, txt)) {
-    int occ = f.search(txt);
+    int occ = aho::search(txt);
     occ_count += occ;
     if(occ > 0) {
       ++line_count;
@@ -78,24 +72,17 @@ vector<string> getPatterns(const string &pat_filename) {
 }
 
 
-void processTxtFile(const vector<string> &pats, const string &txt_filename, const argument args) {
-  ifstream txt_file;
-  printf("Processing file: %s\n", txt_filename.c_str());
-  txt_file.open(txt_filename);
-  if(txt_file.fail()) {
-    printf("Invalid text file: %s\n", txt_filename.c_str());
-    exit(0);
-  }
-
-  if(args.e_max > 0 && (args.algo == "aho" || args.algo == "boy" || args.algo == "shi")) {
+void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filenames, argument args) {
+  
+  if(args.e_max > 0 && (args.algo == "aho" || args.algo == "boy" || args.algo == "sh")) {
     printf("Invalid approximate matching algorithm. --help for more info.\n");
   }
 
-
   if(args.algo == "") {
     if(args.e_max == 0) {
-      if(pats.size() >= 1) {
-        processAho(pats, txt_file, args.count);
+      if(pats.size() > 1) {
+        args.algo = "aho";
+        aho::build(pats);
       }
       else {
 
@@ -103,7 +90,21 @@ void processTxtFile(const vector<string> &pats, const string &txt_filename, cons
     }
   }
   else if(args.algo == "aho") {
-    processAho(pats, txt_file, args.count);
+    aho::build(pats);
   }
 
+  for(string txt_filename : txt_filenames) {
+    ifstream txt_file;
+    //printf("Processing file: %s\n", txt_filename.c_str());
+    txt_file.open(txt_filename);
+    if(txt_file.fail()) {
+      printf("Invalid text file: %s\n", txt_filename.c_str());
+      exit(0);
+    }
+
+    if(args.algo == "aho") {
+      processAho(txt_file, args.count);
+    }
+
+  }
 }

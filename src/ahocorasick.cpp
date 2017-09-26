@@ -1,35 +1,23 @@
 #include "ahocorasick.hpp"
-
+#include "util.hpp"
 #include <vector>
 #include <string>
 #include <queue>
 #include <iostream>
+#include <tuple>
+
 using namespace std;
 
-#include <assert.h>
-AhoFSM::AhoFSM(const vector<string> &pats, const vector<int> &alphabet_hash, const int alphabet_size) {
-    this->alphabet_hash = alphabet_hash;
-    this->pats = pats;
-    this->alphabet_size = alphabet_size;
-    trie.push_back(vector<int>(alphabet_size, -1));
-    terminal.push_back(0);
-    build_fsm();
-    build_failure();
-}
+namespace aho {
 
-int AhoFSM::search(const string &txt) {
-    int count = 0;
-    int node = 0;
-    for(unsigned char ch : txt) {
-        int pos = alphabet_hash[ch];
-        node = trie[node][pos];
-        count += terminal[node];
-    }
+static vector<vector<int>> trie;
+static vector<int> fail;
+static vector<int> terminal;
+static vector<string> pats;
+static vector<int> alphabet_hash;
+static int alphabet_size;
 
-    return count;
-}
-
-void AhoFSM::insert(string &s) {
+static void insert(string &s) {
     int node = 0;
     for(char ch : s) {
         int pos = alphabet_hash[ch];
@@ -43,13 +31,13 @@ void AhoFSM::insert(string &s) {
     terminal[node] += 1;
 }
 
-void AhoFSM::build_fsm() {
+static void build_fsm() {
     for(string &s : pats) {
         insert(s);
     }
 }
 
-void AhoFSM::build_failure() {
+static void build_failure() {
     fail.assign(trie.size(), 0);
     
     queue<int> Q;
@@ -79,3 +67,25 @@ void AhoFSM::build_failure() {
     }
 }
 
+void build(const vector<string> &_pats, const vector<int> &_alphabet_hash, const int _alphabet_size) {
+    tie(alphabet_hash, alphabet_size) = getAlphabet(pats);
+    pats = _pats;
+    trie.push_back(vector<int>(alphabet_size, -1));
+    terminal.push_back(0);
+    build_fsm();
+    build_failure();
+}
+
+int search(const string &txt) {
+    int count = 0;
+    int node = 0;
+    for(unsigned char ch : txt) {
+        int pos = alphabet_hash[ch];
+        node = trie[node][pos];
+        count += terminal[node];
+    }
+
+    return count;
+}
+
+} //namespace aho

@@ -7,22 +7,11 @@
 
 using namespace std;
 
-class AhoFSM {
-public:
-    AhoFSM(const vector<string> &pats, const vector<int> &alphabet_hash, const int alphabet_size);
-    int search(const string &txt);
+namespace aho {
 
-private:
-    vector<vector<int>> trie;
-    vector<int> fail;
-    vector<int> terminal;
-    vector<string> pats;
-    vector<int> alphabet_hash;
-    int alphabet_size;
+void build(const vector<string> &_pats);
+int search(const string &txt);
 
-    void insert(string &s);   
-    void build_fsm();
-    void build_failure();
-};
+}
 
 #endif
