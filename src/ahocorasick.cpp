@@ -67,7 +67,7 @@ static void build_failure() {
     }
 }
 
-void build(const vector<string> &_pats, const vector<int> &_alphabet_hash, const int _alphabet_size) {
+void build(const vector<string> &_pats) {
     tie(alphabet_hash, alphabet_size) = getAlphabet(pats);
     pats = _pats;
     trie.push_back(vector<int>(alphabet_size, -1));
