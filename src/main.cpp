@@ -19,9 +19,7 @@ int main(int argc, char *argv[]) {
   }
   args.pat = argv[optind];
   getTxtFiles(args, argc, argv);
-
-  vector<string> pat = getPatterns(args.patfile);
-  pat.push_back(args.pat);
+  vector<string> pat = getPatterns(args.patfile, args.pat);
 
   processTxtFiles(pat, args.txtfile, args);
 

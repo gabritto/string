@@ -17,18 +17,44 @@ static vector<string> pats;
 static vector<int> alphabet_hash;
 static int alphabet_size;
 
+static void insert(string &s);
+static void build_fsm();
+static void build_failure();
+
+
+void build(const vector<string> &_pats) {
+    pats = _pats;
+    tie(alphabet_hash, alphabet_size) = getAlphabet(pats);
+    trie.push_back(vector<int>(alphabet_size, -1));
+    terminal.push_back(0);
+    build_fsm();
+    build_failure();
+}
+
+int search(const string &txt) {
+    int count = 0;
+    int node = 0;
+    for(unsigned char ch : txt) {
+        int pos = alphabet_hash[ch];
+        node = trie[node][pos];
+        count += terminal[node];
+    }
+
+    return count;
+}
+
 static void insert(string &s) {
     int node = 0;
     for(char ch : s) {
         int pos = alphabet_hash[ch];
         if(trie[node][pos] == -1) {
-            trie[node][pos] = trie.size();
+            trie[node][pos] = (int) trie.size();
             trie.push_back(vector<int>(alphabet_size, -1));
             terminal.push_back(0);
         }
         node = trie[node][pos];
     }
-    ++terminal[node];
+    terminal[node] = 1;
 }
 
 static void build_fsm() {
@@ -65,27 +91,6 @@ static void build_failure() {
             }
         }
     }
-}
-
-void build(const vector<string> &_pats) {
-    pats = _pats;
-    tie(alphabet_hash, alphabet_size) = getAlphabet(pats);
-    trie.push_back(vector<int>(alphabet_size, -1));
-    terminal.push_back(0);
-    build_fsm();
-    build_failure();
-}
-
-int search(const string &txt) {
-    int count = 0;
-    int node = 0;
-    for(unsigned char ch : txt) {
-        int pos = alphabet_hash[ch];
-        node = trie[node][pos];
-        count += terminal[node];
-    }
-
-    return count;
 }
 
 } //namespace aho

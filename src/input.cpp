@@ -17,9 +17,8 @@ static const struct option lopts[] = {
   {0, 0, 0, 0}
 };
 
-static const char *help_msg = "help";
-
 static const char *sopts = "e:p:a:ch";
+static void print_help();
 
 
 void getOptions(argument &args, int argc, char *argv[]) {
@@ -47,7 +46,7 @@ void getOptions(argument &args, int argc, char *argv[]) {
         args.count = true;
         break;
       case 'h':
-        printf("%s\n", help_msg);
+        print_help();
         exit(0);
       case '?':
         exit(0);
@@ -69,4 +68,18 @@ void getTxtFiles(argument &args, int argc, char *argv[]) {
   sort(args.txtfile.begin(), args.txtfile.end());
   auto it = unique(args.txtfile.begin(), args.txtfile.end());
   args.txtfile.resize(it - args.txtfile.begin());
+}
+
+
+static void print_help() {
+  puts("Usage: pmt [OPTION]... PATTERN FILE [FILE]...");
+  puts("Search for PATTERN in each FILE");
+  puts("Example: pmt -c 'hello world' text.txt");
+  puts("");
+  puts("Options:");
+  puts("\t-e, --edit=e_max\tset maximum edit distance to e_max");
+  puts("\t-p, --pattern=FILE\tobtain patterns from FILE");
+  puts("\t-c, --count\t\tprint only counts of matching substrings and lines");
+  puts("\t-h, --help\t\tdisplay this message");
+  puts("\t-a, --algorithm=A\tforce algorithm A to process the search. A is one of 'aho' (Aho-Corasick), 'boy' (Boyer-Moore), 'sh' (Shift-Or)");
 }

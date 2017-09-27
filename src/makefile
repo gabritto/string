@@ -1,8 +1,10 @@
-OBJS = main.cpp input.o util.o ahocorasick.o
+OBJS = main.cpp input.o util.o ahocorasick.o ukkonen.o
 CC = g++
-CFLAGS = -Wall -c
-LFLAGS = -Wall
-VFLAGS = -std=c++11 -O2
+CFLAGS = -c
+LFLAGS = 
+VFLAGS = -std=c++11 -O2 -Wall -Wconversion -Wextra
+
+all: main clean
 
 main: $(OBJS)
 	$(CC) $(LFLAGS) $(VFLAGS) $(OBJS) -o main
@@ -16,7 +18,7 @@ util.o: util.cpp util.hpp
 ahocorasick.o: ahocorasick.cpp ahocorasick.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) ahocorasick.cpp
 
+ukkonen.o: ukkonen.cpp ukkonen.hpp
+	$(CC) $(CFLAGS) $(VFLAGS) ukkonen.cpp
 clean:
-	rm -f *.o
-	rm -f *.exe
-	rm main
+	@rm -f *.o
