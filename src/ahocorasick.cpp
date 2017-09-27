@@ -28,7 +28,7 @@ static void insert(string &s) {
         }
         node = trie[node][pos];
     }
-    terminal[node] += 1;
+    ++terminal[node];
 }
 
 static void build_fsm() {
@@ -68,8 +68,8 @@ static void build_failure() {
 }
 
 void build(const vector<string> &_pats) {
-    tie(alphabet_hash, alphabet_size) = getAlphabet(pats);
     pats = _pats;
+    tie(alphabet_hash, alphabet_size) = getAlphabet(pats);
     trie.push_back(vector<int>(alphabet_size, -1));
     terminal.push_back(0);
     build_fsm();

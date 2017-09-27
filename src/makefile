@@ -2,7 +2,7 @@ OBJS = main.cpp input.o util.o ahocorasick.o
 CC = g++
 CFLAGS = -Wall -c
 LFLAGS = -Wall
-VFLAGS = -std=c++11
+VFLAGS = -std=c++11 -O2
 
 main: $(OBJS)
 	$(CC) $(LFLAGS) $(VFLAGS) $(OBJS) -o main
