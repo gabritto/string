@@ -12,14 +12,14 @@ static string pat;
 static vector<int> good_suffix_shift;
 static vector<int> border;
 
-static void buildBadChar(const string &pat);
-void buildGoodSuffix(const string &pat);
+static void buildBadChar();
+void buildGoodSuffix();
 static void buildBorder(const string &s);
 
 void build (const string &_pat) {
   pat = _pat;
-  buildBadChar(pat);
-  buildGoodSuffix(pat);
+  buildBadChar();
+  buildGoodSuffix();
 }
 
 int search(string &txt) {
@@ -52,7 +52,7 @@ int search(string &txt) {
   return count;
 }
 
-static void buildBadChar(const string &pat) {
+static void buildBadChar() {
   bad_char = vector<int>(256, 0);
   int m = (int) pat.size();
   for(int i = 0; i < m; ++i) {
@@ -61,7 +61,7 @@ static void buildBadChar(const string &pat) {
 }
 
 
-void buildGoodSuffix(const string &pat) {
+void buildGoodSuffix() {
   int m = (int) pat.size();
 
   buildBorder(pat);
