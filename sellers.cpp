@@ -68,19 +68,21 @@ void it_sellers(char *pat, char *txt, int r) {
 }
 
 int main() {
-    string s, t;
-    int r;
-    cin >> s >> t >> r;
-    int m = s.size(), n = t.size();
+  ios_base::sync_with_stdio(0);
+  string s, t;
+  int r = 1;
+  s = "ACGTAA";
+  int m = s.size();
+  while(getline(cin, t)) {
+    int n = t.size();
     vector<vector<int>> memo(m, vector<int>(n, -1));
+    int count = 0;
     for(int i = -1; i < n; ++i) {
-        //cout << sellers(s, t, memo, m - 1, i) << endl;
-        
         if(sellers(s, t, memo, m - 1, i) <= r) {
-            cout << i << " ";
+            ++count;
         }
-        /**/
     }
-    cout << endl;
-    return 0;
+    cout << count << endl;
+  }
+  return 0;
 }

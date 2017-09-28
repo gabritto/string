@@ -1,8 +1,6 @@
 #ifndef UKKONEN_H
 #define UKKONEN_H
 
-#include "util.hpp"
-
 #include <vector>
 #include <string>
 #include <queue>

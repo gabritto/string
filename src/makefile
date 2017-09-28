@@ -23,5 +23,6 @@ boyermoore.o: boyermoore.cpp boyermoore.hpp
 
 ukkonen.o: ukkonen.cpp ukkonen.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) ukkonen.cpp
+	
 clean:
 	@rm -f *.o
