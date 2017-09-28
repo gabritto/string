@@ -1,4 +1,4 @@
-OBJS = main.cpp input.o util.o ahocorasick.o ukkonen.o
+OBJS = main.cpp input.o util.o ahocorasick.o ukkonen.o boyermoore.o
 CC = g++
 CFLAGS = -c
 LFLAGS = 
@@ -17,6 +17,9 @@ util.o: util.cpp util.hpp
 
 ahocorasick.o: ahocorasick.cpp ahocorasick.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) ahocorasick.cpp
+
+boyermoore.o: boyermoore.cpp boyermoore.hpp
+	$(CC) $(CFLAGS) $(VFLAGS) boyermoore.cpp
 
 ukkonen.o: ukkonen.cpp ukkonen.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) ukkonen.cpp

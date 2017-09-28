@@ -18,8 +18,8 @@ static vector<int> alphabet_hash;
 static int alphabet_size;
 
 static void insert(string &s);
-static void build_fsm();
-static void build_failure();
+static void buildFsm();
+static void buildFailure();
 
 
 void build(const vector<string> &_pats) {
@@ -27,8 +27,8 @@ void build(const vector<string> &_pats) {
     tie(alphabet_hash, alphabet_size) = getAlphabet(pats);
     trie.push_back(vector<int>(alphabet_size, -1));
     terminal.push_back(0);
-    build_fsm();
-    build_failure();
+    buildFsm();
+    buildFailure();
 }
 
 int search(const string &txt) {
@@ -57,19 +57,23 @@ static void insert(string &s) {
     terminal[node] = 1;
 }
 
-static void build_fsm() {
+static void buildFsm() {
     for(string &s : pats) {
         insert(s);
     }
 }
 
-static void build_failure() {
+static void buildFailure() {
     fail.assign(trie.size(), 0);
-    
     queue<int> Q;
+    
     for(int pos = 0; pos < alphabet_size; ++pos) {
-        if(trie[0][pos] == -1) trie[0][pos] = 0;
-        else Q.push(trie[0][pos]);
+        if(trie[0][pos] == -1) {
+            trie[0][pos] = 0;
+        }
+        else {
+            Q.push(trie[0][pos]);
+        }
     }
     
     while(!Q.empty()) {
@@ -86,7 +90,6 @@ static void build_failure() {
             else {
                 fail[v] = f;
                 Q.push(v);
-                
                 terminal[v] += terminal[f];
             }
         }
