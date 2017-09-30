@@ -1,7 +1,7 @@
 #include "util.hpp"
 #include "input.hpp"
 #include "ahocorasick.hpp"
-
+#include "boyermoore.hpp"
 #include <fstream>
 #include <string>
 #include <vector>
@@ -55,6 +55,25 @@ static void processAho(ifstream &txt_file, bool count) {
   printf("Number of line occurrences: %d\n", line_count);
 }
 
+static void processBoyer(ifstream &txt_file, bool count) {
+  int line_count = 0;
+  long long occ_count = 0;
+  string txt;
+  while(getline(txt_file, txt)) {
+    int occ = boyer::search(txt);
+    occ_count += occ;
+    if(occ > 0) {
+      ++line_count;
+      if(!count) {
+        printf("%s\n", txt.c_str());
+      }
+    }
+  }
+
+  printf("Number of occurrences: %lld\n", occ_count);
+  printf("Number of line occurrences: %d\n", line_count);
+}
+
 vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   vector<string> pat;
   if(!pattern.empty()) {
@@ -86,19 +105,25 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
   }
   if(args.algo == "") {
     if(args.e_max == 0) {
-      if(pats.size() >= 0) {
+      if(pats.size() > 1) {
         args.algo = "aho";
-        aho::build(pats);
       }
       else {
-
+        args.algo = "boy";
       }
     }
   }
-  else if(args.algo == "aho") {
+  
+  if(args.algo == "aho") {
     aho::build(pats);
   }
-
+  else if(args.algo == "boy") {
+    boyer::build(pats);
+  }
+  else {
+    printf("Invalid algorithm: %s. --help for more info.\n", args.algo.c_str());
+    exit(0);
+  }
   for(string txt_filename : txt_filenames) {
     ifstream txt_file;
     printf("\nFile: %s\n", txt_filename.c_str());
@@ -110,6 +135,8 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
     if(args.algo == "aho") {
       processAho(txt_file, args.count);
     }
-
+    else if(args.algo == "boy") {
+      processBoyer(txt_file, args.count);
+    }
   }
 }

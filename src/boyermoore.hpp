@@ -12,7 +12,7 @@ using namespace std;
 
 namespace boyer {
 
-void build(const string &pat);
+void build(const vector<string> &pat);
 int search(const string &txt);
 
 } //namespace boyer

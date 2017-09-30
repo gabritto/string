@@ -87,8 +87,6 @@ static vector<int> next_column(const vector<int> &col, const string &pat, int ch
 static pair<int, bool> insert(const vector<int> &col) {
   int cur = 0;
   int m = (int) col.size();
-  int d = 1;
-  int i = 0;
   bool is_new = false;
   for(int i = 0; i < m; ++i) {
     int d = 1 + col[i];
@@ -96,7 +94,7 @@ static pair<int, bool> insert(const vector<int> &col) {
       d -= col[i - 1];
     }
     if(trie[cur][d] == -1) {
-      int nxt = trie.size();
+      int nxt = (int) trie.size();
       trie.push_back(vector<int>(3, -1));
       node_id.push_back(-1);
       trie[cur][d] = nxt;
