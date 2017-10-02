@@ -60,8 +60,8 @@ void getOptions(argument &args, int argc, char *argv[]) {
 
 
 void getTxtFiles(argument &args, int argc, char *argv[]) {
-
-  for(int i = optind + 1; i < argc; ++i) { 
+  bool need_pattern = args.patfile == "";
+  for(int i = optind + need_pattern; i < argc; ++i) { 
     args.txtfile.push_back(argv[i]);
   }
 

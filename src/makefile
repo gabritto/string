@@ -5,7 +5,7 @@ LFLAGS =
 VFLAGS = -std=c++11 -O2 -Wall -Wconversion -Wextra
 
 all: main clean
-
+	
 main: $(OBJS)
 	$(CC) $(LFLAGS) $(VFLAGS) $(OBJS) -o main
 

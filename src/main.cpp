@@ -13,11 +13,14 @@ int main(int argc, char *argv[]) {
 
   argument args;
   getOptions(args, argc, argv);
-  if(argc - optind < 2) {
+  bool need_pattern = args.patfile == "";
+  if(argc - optind < 1 + need_pattern) {
     printf("not enough arguments\n");
     exit(0);
   }
-  args.pat = argv[optind];
+  if(need_pattern) {
+  	args.pat = argv[optind];
+  }
   getTxtFiles(args, argc, argv);
   vector<string> pat = getPatterns(args.patfile, args.pat);
 

@@ -3,15 +3,14 @@
 #include "input.hpp"
 #include "ahocorasick.hpp"
 #include "boyermoore.hpp"
-#include <fstream>
+#include <cstring>
 #include <string>
 #include <vector>
 #include <tuple>
 
 using namespace std;
 
-static int max_pat_len;
-static void processAho(bool count);
+static int max_pat_len = 0;
 
 pair<vector<int>, int> getAlphabet(const vector<string> &pats) {
   int i = 1;
@@ -38,7 +37,7 @@ pair<vector<int>, int> getAlphabet(const string &pat) {
 }
 
 
-static void processAho(bool count) {
+static void processAho(string txt_filename, bool count) {
   long long line_count = 0;
   long long occ_count = 0;
   const char* txt;
@@ -48,14 +47,14 @@ static void processAho(bool count) {
     if(occ > 0) {
       ++line_count;
       if(!count) {
-        printf("%s\n", txt);
+        printf("%s: %s\n", txt_filename.c_str(), txt);
       }
     }
   }
-  printf("(%lld/%lld)\n", line_count, occ_count);
+  printf("%s: (%lld/%lld)\n", txt_filename.c_str(), line_count, occ_count);
 }
 
-static void processBoyer(bool count) {
+static void processBoyer(string txt_filename, bool count) {
   long long line_count = 0;
   long long occ_count = 0;
   const char *txt;
@@ -65,12 +64,12 @@ static void processBoyer(bool count) {
     if(occ > 0) {
       ++line_count;
       if(!count) {
-        printf("%s\n", txt);
+        printf("%s: %s\n", txt_filename.c_str(), txt);
       }
     }
   }
 
-  printf("(%lld/%lld)\n", line_count, occ_count);
+  printf("%s: (%lld/%lld)\n", txt_filename.c_str(), line_count, occ_count);
 }
 
 vector<string> getPatterns(const string &pat_filename, const string &pattern) {
@@ -84,20 +83,16 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
     return pat; 
   }
 
-  ifstream pat_file;
-  pat_file.open(pat_filename);
-  if(pat_file.fail()) {
-    printf("Invalid pattern file: %s\n", pat_filename.c_str());
-    exit(0);
-  }
-  string str;
-  while(getline(pat_file, str)) {
-    if(str.size() > 0) {
+  parser::open(pat_filename);
+  const char *str;
+  while((str = parser::readLine()) ) {
+    int sz = (int) strlen(str);
+    if(sz > 0) {
       pat.push_back(str);
-      max_pat_len = max(max_pat_len, (int) str.size());
-
+      max_pat_len = max(max_pat_len, sz);
     }
   }
+  parser::close();
 
   return pat;
 }
@@ -133,10 +128,11 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
     printf("%s: ", txt_filename.c_str());
     parser::open(txt_filename);
     if(args.algo == "aho") {
-      processAho(args.count);
+      processAho(txt_filename, args.count);
     }
     else if(args.algo == "boy") {
-      processBoyer(args.count);
+      processBoyer(txt_filename, args.count);
     }
+    parser::close();
   }
 }

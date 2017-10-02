@@ -4,6 +4,8 @@
 namespace parser {
   void open(string filename);
   const char* readLine();
+  void close();
+
 } 
 
 #endif
