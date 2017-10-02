@@ -3,6 +3,7 @@
 #include "input.hpp"
 #include "ahocorasick.hpp"
 #include "boyermoore.hpp"
+#include "bruteforce.hpp"
 #include <cstring>
 #include <string>
 #include <vector>
@@ -72,15 +73,37 @@ static void processBoyer(string txt_filename, bool count) {
   printf("%s: (%lld/%lld)\n", txt_filename.c_str(), line_count, occ_count);
 }
 
+static void processBruteforce(string txt_filename, bool count) {
+  long long line_count = 0;
+  long long occ_count = 0;
+  const char *txt;
+  while((txt = parser::readLine()) != NULL) {
+    int occ = bruteforce::search(txt);
+    occ_count += occ;
+    if(occ > 0) {
+      ++line_count;
+      if(!count) {
+        printf("%s: %s\n", txt_filename.c_str(), txt);
+      }
+    }
+  }
+
+  printf("%s: (%lld/%lld)\n", txt_filename.c_str(), line_count, occ_count);
+}
+
 vector<string> getPatterns(const string &pat_filename, const string &pattern) {
-  vector<string> pat;
+  vector<string> pats;
   if(!pattern.empty()) {
-    pat.push_back(pattern);
+    pats.push_back(pattern);
     max_pat_len = max(max_pat_len, (int) pattern.size());
   }
 
   if(pat_filename == "") {
-    return pat; 
+    if(pats.empty()) {
+      printf("No pattern given.\n");
+      exit(0);
+    }
+    return pats; 
   }
 
   parser::open(pat_filename);
@@ -88,13 +111,16 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   while((str = parser::readLine()) ) {
     int sz = (int) strlen(str);
     if(sz > 0) {
-      pat.push_back(str);
+      pats.push_back(str);
       max_pat_len = max(max_pat_len, sz);
     }
   }
   parser::close();
-
-  return pat;
+  if(pats.empty()) {
+    printf("No pattern given\n");
+    exit(0);
+  }
+  return pats;
 }
 
 void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filenames, argument args) {
@@ -107,8 +133,11 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
       if(pats.size() > 1) {
         args.algo = "aho";
       }
-      else {
+      else if(pats[0].size() > 5){
         args.algo = "boy";
+      }
+      else {
+        args.algo = "bf";
       }
     }
   }
@@ -118,6 +147,9 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
   }
   else if(args.algo == "boy") {
     boyer::build(pats);
+  }
+  else if(args.algo == "bf") {
+    bruteforce::build(pats);
   }
   else {
     printf("Invalid algorithm: %s. --help for more info.\n", args.algo.c_str());
@@ -132,6 +164,9 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
     }
     else if(args.algo == "boy") {
       processBoyer(txt_filename, args.count);
+    }
+    else if(args.algo == "bf") {
+      processBruteforce(txt_filename, args.count);
     }
     parser::close();
   }
