@@ -52,7 +52,7 @@ static void processAho(string txt_filename, bool count) {
       }
     }
   }
-  printf("%s: (%lld/%lld)\n", txt_filename.c_str(), line_count, occ_count);
+  printf("%s: (%lld/%lld), by Aho-Corasick\n", txt_filename.c_str(), line_count, occ_count);
 }
 
 static void processBoyer(string txt_filename, bool count) {
@@ -70,7 +70,7 @@ static void processBoyer(string txt_filename, bool count) {
     }
   }
 
-  printf("%s: (%lld/%lld)\n", txt_filename.c_str(), line_count, occ_count);
+  printf("%s: (%lld/%lld), by Boyer-Moore\n", txt_filename.c_str(), line_count, occ_count);
 }
 
 static void processBruteforce(string txt_filename, bool count) {
@@ -88,7 +88,7 @@ static void processBruteforce(string txt_filename, bool count) {
     }
   }
 
-  printf("%s: (%lld/%lld)\n", txt_filename.c_str(), line_count, occ_count);
+  printf("%s: (%lld/%lld), by Bruteforce\n", txt_filename.c_str(), line_count, occ_count);
 }
 
 vector<string> getPatterns(const string &pat_filename, const string &pattern) {
