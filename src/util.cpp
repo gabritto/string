@@ -157,7 +157,6 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
   }
   printf("\nFormat of the output: \n\tFILENAME: (LINE_OCURRENCES/OCURRENCES)\n\n");
   for(string txt_filename : txt_filenames) {
-    printf("%s: ", txt_filename.c_str());
     parser::open(txt_filename);
     if(args.algo == "aho") {
       processAho(txt_filename, args.count);

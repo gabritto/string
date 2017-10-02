@@ -1,4 +1,4 @@
-OBJS = main.cpp input.o util.o ahocorasick.o ukkonen.o boyermoore.o parser.o
+OBJS = main.cpp input.o util.o ahocorasick.o ukkonen.o boyermoore.o parser.o bruteforce.o
 CC = g++
 CFLAGS = -c
 LFLAGS = 
@@ -26,6 +26,9 @@ ukkonen.o: ukkonen.cpp ukkonen.hpp
 
 parser.o: parser.cpp parser.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) parser.cpp
+
+bruteforce.o: bruteforce.cpp bruteforce.hpp
+	$(CC) $(CFLAGS) $(VFLAGS) bruteforce.cpp
 	
 clean:
 	@rm -f *.o
