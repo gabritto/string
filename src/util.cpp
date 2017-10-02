@@ -1,4 +1,5 @@
 #include "util.hpp"
+#include "parser.hpp"
 #include "input.hpp"
 #include "ahocorasick.hpp"
 #include "boyermoore.hpp"
@@ -9,7 +10,8 @@
 
 using namespace std;
 
-static void processAho(ifstream &txt_file, bool count);
+static int max_pat_len;
+static void processAho(bool count);
 
 pair<vector<int>, int> getAlphabet(const vector<string> &pats) {
   int i = 1;
@@ -36,48 +38,46 @@ pair<vector<int>, int> getAlphabet(const string &pat) {
 }
 
 
-static void processAho(ifstream &txt_file, bool count) {
-  int line_count = 0;
+static void processAho(bool count) {
+  long long line_count = 0;
   long long occ_count = 0;
-  string txt;
-  while(getline(txt_file, txt)) {
+  const char* txt;
+  while((txt = parser::readLine()) != NULL) {
     int occ = aho::search(txt);
     occ_count += occ;
     if(occ > 0) {
       ++line_count;
       if(!count) {
-        printf("%s\n", txt.c_str());
+        printf("%s\n", txt);
       }
     }
   }
-
-  printf("Number of occurrences: %lld\n", occ_count);
-  printf("Number of line occurrences: %d\n", line_count);
+  printf("(%lld/%lld)\n", line_count, occ_count);
 }
 
-static void processBoyer(ifstream &txt_file, bool count) {
-  int line_count = 0;
+static void processBoyer(bool count) {
+  long long line_count = 0;
   long long occ_count = 0;
-  string txt;
-  while(getline(txt_file, txt)) {
+  const char *txt;
+  while((txt = parser::readLine()) != NULL) {
     int occ = boyer::search(txt);
     occ_count += occ;
     if(occ > 0) {
       ++line_count;
       if(!count) {
-        printf("%s\n", txt.c_str());
+        printf("%s\n", txt);
       }
     }
   }
 
-  printf("Number of occurrences: %lld\n", occ_count);
-  printf("Number of line occurrences: %d\n", line_count);
+  printf("(%lld/%lld)\n", line_count, occ_count);
 }
 
 vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   vector<string> pat;
   if(!pattern.empty()) {
     pat.push_back(pattern);
+    max_pat_len = max(max_pat_len, (int) pattern.size());
   }
 
   if(pat_filename == "") {
@@ -92,7 +92,11 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   }
   string str;
   while(getline(pat_file, str)) {
-    pat.push_back(str);
+    if(str.size() > 0) {
+      pat.push_back(str);
+      max_pat_len = max(max_pat_len, (int) str.size());
+
+    }
   }
 
   return pat;
@@ -124,19 +128,15 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
     printf("Invalid algorithm: %s. --help for more info.\n", args.algo.c_str());
     exit(0);
   }
+  printf("\nFormat of the output: \n\tFILENAME: (LINE_OCURRENCES/OCURRENCES)\n\n");
   for(string txt_filename : txt_filenames) {
-    ifstream txt_file;
-    printf("\nFile: %s\n", txt_filename.c_str());
-    txt_file.open(txt_filename);
-    if(txt_file.fail()) {
-      printf("Invalid text file: %s\n", txt_filename.c_str());
-      exit(0);
-    }
+    printf("%s: ", txt_filename.c_str());
+    parser::open(txt_filename);
     if(args.algo == "aho") {
-      processAho(txt_file, args.count);
+      processAho(args.count);
     }
     else if(args.algo == "boy") {
-      processBoyer(txt_file, args.count);
+      processBoyer(args.count);
     }
   }
 }

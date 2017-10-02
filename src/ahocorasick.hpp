@@ -10,7 +10,7 @@ using namespace std;
 namespace aho {
 
 void build(const vector<string> &_pats);
-int search(const string &txt);
+int search(const char *txt);
 
 }
 

@@ -1,5 +1,6 @@
 //#include "boyermoore.hpp"
 #include <string>
+#include <cstring>
 #include <vector>
 #include <iostream>
 #include <algorithm>
@@ -22,8 +23,8 @@ void build (const vector<string> &_pat) {
   buildGoodSuffix();
 }
 
-int search(const string &txt) {
-  int n = (int) txt.size();
+int search(const char *txt) {
+  int n = (int) strlen(txt);
   int count = 0;
   
   for(int k = 0; k < (int) pat.size(); ++k)

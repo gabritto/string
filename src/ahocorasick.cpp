@@ -31,11 +31,11 @@ void build(const vector<string> &_pats) {
     buildFailure();
 }
 
-int search(const string &txt) {
+int search(const char *txt) {
     int count = 0;
     int node = 0;
-    for(unsigned char ch : txt) {
-        int pos = alphabet_hash[ch];
+    for(int i = 0; txt[i] != '\0'; ++i) {
+        int pos = alphabet_hash[(unsigned char) txt[i]];
         node = trie[node][pos];
         count += terminal[node];
     }
@@ -54,7 +54,7 @@ static void insert(string &s) {
         }
         node = trie[node][pos];
     }
-    terminal[node] = 1;
+    ++terminal[node];
 }
 
 static void buildFsm() {
