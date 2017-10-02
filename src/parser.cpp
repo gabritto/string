@@ -14,16 +14,16 @@ static FILE *txt;
 static bool endd;
 
 void open(string filename) {
- txt = fopen(filename.c_str(), "rb");
- if(txt == NULL) {
-  printf("Error opening file: %s\n", filename.c_str());
-  exit(0);
-}
+  txt = fopen(filename.c_str(), "rb");
+  if(txt == NULL) {
+    printf("Error opening file: %s\n", filename.c_str());
+    exit(0);
+  }
 
-str[0] = '\0';
-str_len = 0;
-ptr_right = str - 1;
-endd = false;
+  str[0] = '\0';
+  str_len = 0;
+  ptr_right = str - 1;
+  endd = false;
 }
 
 const char* readLine() {
