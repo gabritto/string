@@ -1,8 +1,10 @@
 #include "boyermoore.hpp"
+#include "z.hpp"
 #include <string>
 #include <cstring>
 #include <vector>
 #include <algorithm>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -15,7 +17,7 @@ static vector<int> border;
 
 static void buildBadChar();
 void buildGoodSuffix();
-static void buildBorder(const string &s);
+//static void buildBorder(const string &s);
 
 void build (const vector<string> &_pat) {
   pat = _pat;
@@ -68,11 +70,44 @@ static void buildBadChar() {
   }
 }
 
-
 void buildGoodSuffix() {
   good_suffix_shift = vector<vector<int>>(pat.size());
-  for(int k = 0; k < (int) pat.size(); ++k)
-  {
+  for(int k = 0; k < (int) pat.size(); ++k) {
+    int m = (int) pat[k].size();
+    string rev_pat = pat[k];
+    reverse(rev_pat.begin(), rev_pat.end());
+    vector<int> z = z::build(rev_pat);
+    good_suffix_shift[k].assign(m + 1, 0);
+    good_suffix_shift[k][m] = 1;
+
+    for(int i = 0; i < m - 1; ++i) {
+      int j = m - z[m - i - 1];
+      good_suffix_shift[k][j] = m - (i + 1);
+    }
+
+    vector<int> l(m, 0);
+    for(int i = 0; i < m; ++i) {
+      if(z[m - i - 1] == i + 1) {
+        l[m - i - 1] = i + 1;
+      }
+      else if(i > 0) {
+        l[m - i - 1] = l[m - i];
+      }
+    }
+
+    for(int i = 0; i < m; ++i) {
+      if(good_suffix_shift[k][i] == 0) {
+        good_suffix_shift[k][i] = m - l[i];
+      }
+    }
+  }
+
+}
+
+/*
+void buildGoodSuffix() {
+  good_suffix_shift = vector<vector<int>>(pat.size());
+  for(int k = 0; k < (int) pat.size(); ++k) {
     int m = (int) pat[k].size();
 
     buildBorder(pat[k]);
@@ -103,7 +138,7 @@ static void buildBorder(const string &s) {
     border[i] = j;
   }
 }
-
+*/
 } //namespace boyer
 
 
