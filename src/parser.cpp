@@ -1,8 +1,9 @@
+#include "parser.hpp"
 #include <cstring>
 #include <cstdio>
 #include <string>
-using namespace std;
 
+using namespace std;
 
 namespace parser {
 
@@ -13,7 +14,7 @@ static int str_len;
 static FILE *txt = NULL;
 static bool endd;
 
-void open(string filename) {
+void open(const string &filename) {
   if(txt != NULL) {
     printf("Error during call to parser::open(). A file is already opened. Use parser::close() before opening a new file.\n");
     exit(0);

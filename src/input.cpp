@@ -1,7 +1,6 @@
 #include "input.hpp"
 #include <getopt.h>
 #include <cstdio>
-#include <iostream>
 #include <algorithm>
 #include <vector>
 #include <string>
@@ -62,17 +61,17 @@ void getOptions(argument &args, int argc, char *argv[]) {
 void getTxtFiles(argument &args, int argc, char *argv[]) {
   bool need_pattern = args.patfile == "";
   for(int i = optind + need_pattern; i < argc; ++i) { 
-    args.txtfile.push_back(argv[i]);
+    args.txtfiles.push_back(argv[i]);
   }
 
-  sort(args.txtfile.begin(), args.txtfile.end());
-  auto it = unique(args.txtfile.begin(), args.txtfile.end());
-  args.txtfile.resize(it - args.txtfile.begin());
+  sort(args.txtfiles.begin(), args.txtfiles.end());
+  auto it = unique(args.txtfiles.begin(), args.txtfiles.end());
+  args.txtfiles.resize(it - args.txtfiles.begin());
 }
 
 
 static void print_help() {
-  puts("Usage: pmt [OPTIONS]... PATTERN FILE [FILES]...");
+  puts("Usage: pmt [OPTION]... PATTERN FILE [FILE]...");
   puts("Search for PATTERN in each FILE");
   puts("Example: pmt -c 'hello world' text.txt");
   puts("");
@@ -81,5 +80,5 @@ static void print_help() {
   puts("\t-p, --pattern=FILE\tobtain patterns from FILE");
   puts("\t-c, --count\t\tprint only counts of matching substrings and lines");
   puts("\t-h, --help\t\tdisplay this message");
-  puts("\t-a, --algorithm=A\tforce algorithm A to process the search. A is one of 'aho' (Aho-Corasick), 'boy' (Boyer-Moore), 'sh' (Shift-Or), 'ukk' (Ukkonen), 'sell' (Sellers)");
+  puts("\t-a, --algorithm=A\tforce algorithm A to process the search. A is one of 'aho' (Aho-Corasick), 'boy' (Boyer-Moore), 'bf' (Bruteforce), 'ukk' (Ukkonen), 'sell' (Sellers)");
 }

@@ -9,11 +9,13 @@
 #include <cstring>
 #include <string>
 #include <vector>
-#include <tuple>
 
 using namespace std;
 
 static int max_pat_len = 0;
+static string algo_fullname;
+typedef int (*search_function)(const char *);
+static search_function search;
 
 pair<vector<int>, int> getAlphabet(const vector<string> &pats) {
   int i = 1;
@@ -40,29 +42,12 @@ pair<vector<int>, int> getAlphabet(const string &pat) {
 }
 
 
-static void processAho(string txt_filename, bool count) {
-  long long line_count = 0;
-  long long occ_count = 0;
-  const char* txt;
-  while((txt = parser::readLine()) != NULL) {
-    int occ = aho::search(txt);
-    occ_count += occ;
-    if(occ > 0) {
-      ++line_count;
-      if(!count) {
-        printf("%s: %s\n", txt_filename.c_str(), txt);
-      }
-    }
-  }
-  printf("%s: (%lld/%lld), by Aho-Corasick\n", txt_filename.c_str(), line_count, occ_count);
-}
-
-static void processBoyer(string txt_filename, bool count) {
+static void match(string txt_filename, bool count) {
   long long line_count = 0;
   long long occ_count = 0;
   const char *txt;
   while((txt = parser::readLine()) != NULL) {
-    int occ = boyer::search(txt);
+    int occ = search(txt);
     occ_count += occ;
     if(occ > 0) {
       ++line_count;
@@ -72,43 +57,7 @@ static void processBoyer(string txt_filename, bool count) {
     }
   }
 
-  printf("%s: (%lld/%lld), by Boyer-Moore\n", txt_filename.c_str(), line_count, occ_count);
-}
-
-static void processBruteforce(string txt_filename, bool count) {
-  long long line_count = 0;
-  long long occ_count = 0;
-  const char *txt;
-  while((txt = parser::readLine()) != NULL) {
-    int occ = bruteforce::search(txt);
-    occ_count += occ;
-    if(occ > 0) {
-      ++line_count;
-      if(!count) {
-        printf("%s: %s\n", txt_filename.c_str(), txt);
-      }
-    }
-  }
-
-  printf("%s: (%lld/%lld), by Bruteforce\n", txt_filename.c_str(), line_count, occ_count);
-}
-
-static void processUkkonen(string txt_filename, bool count) {
-  long long line_count = 0;
-  long long occ_count = 0;
-  const char *txt;
-  while((txt = parser::readLine()) != NULL) {
-    int occ = ukkonen::search(txt);
-    occ_count += occ;
-    if(occ > 0) {
-      ++line_count;
-      if(!count) {
-        printf("%s: %s\n", txt_filename.c_str(), txt);
-      }
-    }
-  }
-
-  printf("%s: (%lld/%lld), by Ukkonen\n", txt_filename.c_str(), line_count, occ_count);
+  printf("%s: (%lld/%lld), by %s\n", txt_filename.c_str(), line_count, occ_count, algo_fullname.c_str());
 }
 
 vector<string> getPatterns(const string &pat_filename, const string &pattern) {
@@ -143,8 +92,8 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   return pats;
 }
 
-void processTxtFiles(const vector<string> &pats, argument args) {
-  const vector<string> &txt_filenames = args.txtfile;
+void processAlgorithm(const vector<string> &pats, argument &args) {
+
   if(args.e_max > 0 && (args.algo == "aho" || args.algo == "boy" || args.algo == "sh")) {
     printf("Invalid approximate matching algorithm. --help for more info.\n");
   }
@@ -153,7 +102,7 @@ void processTxtFiles(const vector<string> &pats, argument args) {
       if(pats.size() > 1) {
         args.algo = "aho";
       }
-      else if(pats[0].size() > 5){
+      else if(pats[0].size() >= 5){
         args.algo = "boy";
       }
       else {
@@ -161,41 +110,43 @@ void processTxtFiles(const vector<string> &pats, argument args) {
       }
     }
   }
-  
+
   if(args.algo == "aho") {
     aho::build(pats);
+    search = aho::search;
+    algo_fullname = "Aho-Corasick";
   }
   else if(args.algo == "boy") {
     boyer::build(pats);
+    search = boyer::search;
+    algo_fullname = "Boyer-Moore";
   }
   else if(args.algo == "bf") {
     bruteforce::build(pats);
+    search = bruteforce::search;
+    algo_fullname = "Bruteforce";
   }
   else if(args.algo == "ukk") {
     ukkonen::build(pats, args.e_max);
+    search = ukkonen::search;
+    algo_fullname = "Ukkonen";
   }
   else if(args.algo == "sell") {
     sellers::build(pats, args.e_max);
+    search = sellers::search;
+    algo_fullname = "Sellers";
   }
   else {
     printf("Invalid algorithm: %s. --help for more info.\n", args.algo.c_str());
     exit(0);
   }
+}
+
+void processTxtFiles(argument &args) {
   printf("\nFormat of the output: \n\tFILENAME: (LINE_OCURRENCES/OCURRENCES)\n\n");
-  for(string txt_filename : txt_filenames) {
+  for(string &txt_filename : args.txtfiles) {
     parser::open(txt_filename);
-    if(args.algo == "aho") {
-      processAho(txt_filename, args.count);
-    }
-    else if(args.algo == "boy") {
-      processBoyer(txt_filename, args.count);
-    }
-    else if(args.algo == "bf") {
-      processBruteforce(txt_filename, args.count);
-    }
-    else if(args.algo == "ukk") {
-      processUkkonen(txt_filename, args.count);
-    }
+    match(txt_filename, args.count);
     parser::close();
   }
 }

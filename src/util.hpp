@@ -9,7 +9,8 @@
 using namespace std;
 
 vector<string> getPatterns(const string &file, const string &pattern);
-void processTxtFiles(const vector<string> &pats, argument args);
+void processTxtFiles(argument &args);
+void processAlgorithm(const vector<string> &pats, argument &args);
 pair<vector<int>, int> getAlphabet(const vector<string> &pats);
 pair<vector<int>, int> getAlphabet(const string &pat);
 

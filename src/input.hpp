@@ -14,7 +14,7 @@ struct argument {
   bool count;
 
   string pat;
-  vector<string> txtfile;
+  vector<string> txtfiles;
 };
 
 

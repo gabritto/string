@@ -24,7 +24,7 @@ static pair<int, bool> insert(const vector<int> &col, int p);
 
 void build(const vector<string> &patterns, int r) {
   tie(alphabet_hash, alphabet_size) = getAlphabet(patterns);
-  int pats_size = patterns.size();
+  int pats_size = (int) patterns.size();
   trie.resize(pats_size);
   fsm.resize(pats_size);
   node_id.resize(pats_size);
@@ -66,12 +66,12 @@ void build(const vector<string> &patterns, int r) {
   }
 }
 
-int search(const string &txt) {
+int search(const char *txt) {
   int cur = 0;
   int occ = 0;
   for(int p = 0; p < int(fsm.size()); ++p) {
-    for(unsigned char ch : txt) {
-      int c = alphabet_hash[ch];
+    for(int i = 0; txt[i] != '\0'; ++i) {
+      int c = alphabet_hash[(unsigned char) txt[i]];
       cur = fsm[p][cur][c];
       if(is_final[p][cur]) {
         ++occ;

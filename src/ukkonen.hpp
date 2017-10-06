@@ -11,7 +11,7 @@ using namespace std;
 namespace ukkonen {
 
 void build(const vector<string> &patterns, int r);
-int search(const string &txt);
+int search(const char *txt);
 
 } //namespace ukkonen
 

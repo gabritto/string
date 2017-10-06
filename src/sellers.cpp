@@ -1,5 +1,7 @@
+#include "sellers.hpp"
 #include <vector>
 #include <string>
+#include <cstring>
 #include <algorithm>
 
 using namespace std;
@@ -14,11 +16,11 @@ void build(const vector<string> &pats, int r) {
     err = r;
 }
 
-int search(const string &txt) {
+int search(const char *txt) {
     int occ = 0;
-    int n = txt.size();
+    int n = (int) strlen(txt);
     for(const string &pat: patterns) {
-        int m = pat.size();
+        int m = (int) pat.size();
         vector<vector<int>> memo(2, vector<int>(n + 1));
         int old = 0, cur = 1;
         for(int i = 0; i <= n; ++i) {

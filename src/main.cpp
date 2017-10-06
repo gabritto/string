@@ -19,12 +19,12 @@ int main(int argc, char *argv[]) {
     exit(0);
   }
   if(need_pattern) {
-  	args.pat = argv[optind];
+    args.pat = argv[optind];
   }
   getTxtFiles(args, argc, argv);
-  vector<string> pat = getPatterns(args.patfile, args.pat);
-
-  processTxtFiles(pat, args);
+  vector<string> pats = getPatterns(args.patfile, args.pat);
+  processAlgorithm(pats, args);
+  processTxtFiles(args);
 
   return 0;
 }
