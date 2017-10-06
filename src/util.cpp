@@ -4,6 +4,8 @@
 #include "ahocorasick.hpp"
 #include "boyermoore.hpp"
 #include "bruteforce.hpp"
+#include "ukkonen.hpp"
+#include "sellers.hpp"
 #include <cstring>
 #include <string>
 #include <vector>
@@ -91,6 +93,24 @@ static void processBruteforce(string txt_filename, bool count) {
   printf("%s: (%lld/%lld), by Bruteforce\n", txt_filename.c_str(), line_count, occ_count);
 }
 
+static void processUkkonen(string txt_filename, bool count) {
+  long long line_count = 0;
+  long long occ_count = 0;
+  const char *txt;
+  while((txt = parser::readLine()) != NULL) {
+    int occ = ukkonen::search(txt);
+    occ_count += occ;
+    if(occ > 0) {
+      ++line_count;
+      if(!count) {
+        printf("%s: %s\n", txt_filename.c_str(), txt);
+      }
+    }
+  }
+
+  printf("%s: (%lld/%lld), by Ukkonen\n", txt_filename.c_str(), line_count, occ_count);
+}
+
 vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   vector<string> pats;
   if(!pattern.empty()) {
@@ -123,8 +143,8 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   return pats;
 }
 
-void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filenames, argument args) {
-  
+void processTxtFiles(const vector<string> &pats, argument args) {
+  const vector<string> &txt_filenames = args.txtfile;
   if(args.e_max > 0 && (args.algo == "aho" || args.algo == "boy" || args.algo == "sh")) {
     printf("Invalid approximate matching algorithm. --help for more info.\n");
   }
@@ -151,6 +171,12 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
   else if(args.algo == "bf") {
     bruteforce::build(pats);
   }
+  else if(args.algo == "ukk") {
+    ukkonen::build(pats, args.e_max);
+  }
+  else if(args.algo == "sell") {
+    sellers::build(pats, args.e_max);
+  }
   else {
     printf("Invalid algorithm: %s. --help for more info.\n", args.algo.c_str());
     exit(0);
@@ -166,6 +192,9 @@ void processTxtFiles(const vector<string> &pats, const vector<string> &txt_filen
     }
     else if(args.algo == "bf") {
       processBruteforce(txt_filename, args.count);
+    }
+    else if(args.algo == "ukk") {
+      processUkkonen(txt_filename, args.count);
     }
     parser::close();
   }

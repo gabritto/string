@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
   getTxtFiles(args, argc, argv);
   vector<string> pat = getPatterns(args.patfile, args.pat);
 
-  processTxtFiles(pat, args.txtfile, args);
+  processTxtFiles(pat, args);
 
   return 0;
 }

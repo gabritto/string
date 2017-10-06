@@ -10,7 +10,7 @@ using namespace std;
 
 namespace ukkonen {
 
-void build(const string &pat, int r);
+void build(const vector<string> &patterns, int r);
 int search(const string &txt);
 
 } //namespace ukkonen

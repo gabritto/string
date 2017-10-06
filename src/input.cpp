@@ -72,7 +72,7 @@ void getTxtFiles(argument &args, int argc, char *argv[]) {
 
 
 static void print_help() {
-  puts("Usage: pmt [OPTION]... PATTERN FILE [FILE]...");
+  puts("Usage: pmt [OPTIONS]... PATTERN FILE [FILES]...");
   puts("Search for PATTERN in each FILE");
   puts("Example: pmt -c 'hello world' text.txt");
   puts("");
@@ -81,5 +81,5 @@ static void print_help() {
   puts("\t-p, --pattern=FILE\tobtain patterns from FILE");
   puts("\t-c, --count\t\tprint only counts of matching substrings and lines");
   puts("\t-h, --help\t\tdisplay this message");
-  puts("\t-a, --algorithm=A\tforce algorithm A to process the search. A is one of 'aho' (Aho-Corasick), 'boy' (Boyer-Moore), 'sh' (Shift-Or)");
+  puts("\t-a, --algorithm=A\tforce algorithm A to process the search. A is one of 'aho' (Aho-Corasick), 'boy' (Boyer-Moore), 'sh' (Shift-Or), 'ukk' (Ukkonen), 'sell' (Sellers)");
 }
