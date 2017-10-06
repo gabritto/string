@@ -15,13 +15,14 @@ static vector<vector<int>> good_suffix_shift;
 static vector<int> border;
 
 static void buildBadChar();
-void buildGoodSuffix();
+static void buildStrictGoodSuffix();
+//static void buildGoodSuffix();
 //static void buildBorder(const string &s);
 
 void build (const vector<string> &_pat) {
   pat = _pat;
   buildBadChar();
-  buildGoodSuffix();
+  buildStrictGoodSuffix();
 }
 
 int search(const char *txt) {
@@ -35,11 +36,13 @@ int search(const char *txt) {
 
     int last_alignment_pos = -1;
     int last_comparison_pos = -1;
+    bool galil_range = false;
     while(i <= n - m) {
       int j = m - 1;
+      galil_range = i > last_comparison_pos && i <= last_alignment_pos;
       while(j >= 0 && txt[i + j] == pat[k][j]) {
         --j;
-        if(i > last_comparison_pos && i <= last_alignment_pos && i + j == last_alignment_pos) {
+        if(i + j == last_alignment_pos && galil_range) {
           j = -1;
         }
       }
@@ -69,7 +72,7 @@ static void buildBadChar() {
   }
 }
 
-void buildGoodSuffix() {
+static void buildStrictGoodSuffix() {
   good_suffix_shift = vector<vector<int>>(pat.size());
   for(int k = 0; k < (int) pat.size(); ++k) {
     int m = (int) pat[k].size();
@@ -104,7 +107,7 @@ void buildGoodSuffix() {
 }
 
 /*
-void buildGoodSuffix() {
+static void buildGoodSuffix() {
   good_suffix_shift = vector<vector<int>>(pat.size());
   for(int k = 0; k < (int) pat.size(); ++k) {
     int m = (int) pat[k].size();
