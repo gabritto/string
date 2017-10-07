@@ -1,11 +1,11 @@
-OBJS = main.cpp input.o util.o ahocorasick.o ukkonen.o boyermoore.o parser.o\
-bruteforce.o z.o sellers.o
+OBJS = main.cpp input.o util.o ahocorasick.o ukkonen.o boyermoore.o parser.o \
+bruteforce.o z.o sellers.o shiftor.o wumanber.o
 CC = g++
 CFLAGS = -c
 LFLAGS = 
 VFLAGS = -std=c++11 -O2 -Wall -Wconversion -Wextra
 
-all: main clean
+all: main 
 	
 main: $(OBJS)
 	$(CC) $(LFLAGS) $(VFLAGS) $(OBJS) -o main
@@ -36,6 +36,12 @@ z.o: z.cpp z.hpp
 
 sellers.o: sellers.cpp sellers.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) sellers.cpp
+
+shiftor.o: shiftor.cpp shiftor.hpp
+	$(CC) $(CFLAGS) $(VFLAGS) shiftor.cpp
+
+wumanber.o: wumanber.cpp wumanber.hpp
+	$(CC) $(CFLAGS) $(VFLAGS) wumanber.cpp
 
 clean:
 	@rm -f *.o

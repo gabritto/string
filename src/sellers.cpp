@@ -27,8 +27,8 @@ int search(const char *txt) {
             memo[old][i] = 0;
         }
         for(int i = 1; i <= m; ++i) {
-            memo[cur][0] = 0;
-            for(int j = 1; j <= m; ++j) {
+            memo[cur][0] = i;
+            for(int j = 1; j <= n; ++j) {
                 memo[cur][j] = min(memo[cur][j - 1] + 1, memo[old][j] + 1);
                 int b = 0;
                 if(pat[i - 1] != txt[j - 1])

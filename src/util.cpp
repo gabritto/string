@@ -6,6 +6,8 @@
 #include "bruteforce.hpp"
 #include "ukkonen.hpp"
 #include "sellers.hpp"
+#include "shiftor.hpp"
+#include "wumanber.hpp"
 #include <cstring>
 #include <string>
 #include <vector>
@@ -135,6 +137,16 @@ void processAlgorithm(const vector<string> &pats, argument &args) {
     sellers::build(pats, args.e_max);
     search = sellers::search;
     algo_fullname = "Sellers";
+  }
+  else if(args.algo == "sho") {
+    shiftor::build(pats);
+    search = shiftor::search;
+    algo_fullname = "Shift-Or";
+  }
+  else if(args.algo == "wum") {
+    wumanber::build(pats, args.e_max);
+    search = wumanber::search;
+    algo_fullname = "Wu-Manber";
   }
   else {
     printf("Invalid algorithm: %s. --help for more info.\n", args.algo.c_str());
