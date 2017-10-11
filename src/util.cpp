@@ -15,6 +15,7 @@
 using namespace std;
 
 static int max_pat_len = 0;
+static int sum_pat_len = 0;
 static string algo_fullname;
 typedef int (*search_function)(const char *);
 static search_function search;
@@ -67,6 +68,7 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   if(!pattern.empty()) {
     pats.push_back(pattern);
     max_pat_len = max(max_pat_len, (int) pattern.size());
+    sum_pat_len += (int) pattern.size();
   }
 
   if(pat_filename == "") {
@@ -84,6 +86,7 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
     if(sz > 0) {
       pats.push_back(str);
       max_pat_len = max(max_pat_len, sz);
+      sum_pat_len += sz;
     }
   }
   parser::close();
@@ -96,19 +99,30 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
 
 void processAlgorithm(const vector<string> &pats, argument &args) {
 
-  if(args.e_max > 0 && (args.algo == "aho" || args.algo == "boy" || args.algo == "sh")) {
+  if(args.e_max > 0 && (args.algo != "" && args.algo != "wum" &&
+    args.algo != "sell" && args.algo != "ukk")) {
     printf("Invalid approximate matching algorithm. --help for more info.\n");
+    exit(0);
   }
   if(args.algo == "") {
-    if(args.e_max == 0) {
+    if(args.e_max == 0) {//exact matching
       if(pats.size() > 1) {
         args.algo = "aho";
       }
-      else if(pats[0].size() >= 5){
-        args.algo = "boy";
+      else if(max_pat_len < 5) {
+        args.algo = "bf";
+      }
+      else if(max_pat_len <= shiftor::max_pat_len) {
+        args.algo = "sho";
       }
       else {
-        args.algo = "bf";
+        args.algo = "boy";
+      }
+    }
+    else {
+      args.algo = "ukk";
+      if(max_pat_len <= wumanber::max_pat_len) {
+
       }
     }
   }
@@ -139,11 +153,21 @@ void processAlgorithm(const vector<string> &pats, argument &args) {
     algo_fullname = "Sellers";
   }
   else if(args.algo == "sho") {
+    if(max_pat_len > shiftor::max_pat_len) {
+      printf("Invalid algorithm: %s. All patterns must have size at most %d\n",
+      args.algo.c_str(), shiftor::max_pat_len);
+        exit(0);
+    }
     shiftor::build(pats);
     search = shiftor::search;
     algo_fullname = "Shift-Or";
   }
   else if(args.algo == "wum") {
+    if(max_pat_len > wumanber::max_pat_len) {
+      printf("Invalid algorithm: %s. All patterns must have size at most %d\n",
+      args.algo.c_str(), wumanber::max_pat_len);
+        exit(0);
+    }
     wumanber::build(pats, args.e_max);
     search = wumanber::search;
     algo_fullname = "Wu-Manber";
