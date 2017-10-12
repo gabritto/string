@@ -8,6 +8,7 @@ using namespace std;
 namespace parser {
   void open(const string &filename);
   const char* readLine();
+  long long filesize();
   void close();
 
 } 

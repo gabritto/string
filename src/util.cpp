@@ -97,6 +97,15 @@ vector<string> getPatterns(const string &pat_filename, const string &pattern) {
   return pats;
 }
 
+static long long maxFilesize(vector<string> &files) {
+  long long max_fs = 0;
+  for(string &file : files) {
+    parser::open(file);
+    max_fs = max(max_fs, parser::filesize());
+    parser::close();
+  }
+  return max_fs;
+}
 void processAlgorithm(const vector<string> &pats, argument &args) {
 
   if(args.e_max > 0 && (args.algo != "" && args.algo != "wum" &&
@@ -120,9 +129,23 @@ void processAlgorithm(const vector<string> &pats, argument &args) {
       }
     }
     else {
-      args.algo = "ukk";
-      if(max_pat_len <= wumanber::max_pat_len) {
-
+      long long max_fsize = maxFilesize(args.txtfiles);
+      if(max_fsize >= (1LL << 30) && 
+        ((max_pat_len <= 100 && args.e_max <= 5) || 
+          (max_pat_len <= 20 && args.e_max <= 14))) {
+        args.algo = "ukk";
+      }
+      else if(max_fsize < (1LL << 30) && max_fsize >= (1LL << 20) * 100 && 
+        ((max_pat_len <= 105 && args.e_max <= 4) || 
+          (max_pat_len <= 75 && args.e_max <= 5) ||
+          (max_pat_len <= 20 && args.e_max <= 14))) {
+        args.algo = "ukk";
+      }
+      else if(max_pat_len <= wumanber::max_pat_len) {
+        args.algo = "wum";
+      }
+      else {
+        args.algo = "sell";
       }
     }
   }
