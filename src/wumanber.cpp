@@ -1,9 +1,9 @@
+#include "wumanber.hpp"
+#include "util.hpp"
 #include <vector>
 #include <string>
 #include <cstring>
 #include <tuple>
-#include "util.hpp"
-#include "wumanber.hpp"
 
 using namespace std;
 
@@ -31,10 +31,10 @@ void build(const vector<string> &_patterns, int r) {
 }
 
 int search(const char *txt) {
-  int n = strlen(txt);
+  int n = (int) strlen(txt);
   int occ = 0;
   for(int p = 0; p < int(patterns.size()); ++p) {
-    int m = patterns[p].size();
+    int m = (int) patterns[p].size();
     ulong_t msb = 1ULL << (m - 1);
     vector<ulong_t> S(err + 1, ~0ULL);
     for(int i = 1; i <= err; ++i) {

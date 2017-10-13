@@ -3,12 +3,13 @@ bruteforce.o z.o sellers.o shiftor.o wumanber.o
 CC = g++
 CFLAGS = -c
 LFLAGS = 
-VFLAGS = -std=c++11 -O2 -Wall -Wconversion -Wextra
+VFLAGS = -std=c++11 -O2
 
-all: main 
+all: main clean
 	
 main: $(OBJS)
-	$(CC) $(LFLAGS) $(VFLAGS) $(OBJS) -o main
+	@mkdir -p ../bin/
+	$(CC) $(LFLAGS) $(VFLAGS) $(OBJS) -o ../bin/pmt
 
 input.o: input.cpp input.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) input.cpp

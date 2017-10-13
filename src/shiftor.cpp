@@ -1,9 +1,9 @@
+#include "shiftor.hpp"
+#include "util.hpp"
 #include <vector>
 #include <string>
 #include <cstring>
 #include <tuple>
-#include "util.hpp"
-#include "shiftor.hpp"
 
 using namespace std;
 
@@ -29,11 +29,11 @@ void build(const vector<string> &_patterns) {
 }
 
 int search(const char *txt) {
-  int n = strlen(txt);
+  int n = (int) strlen(txt);
   int occ = 0;
   for(int p = 0; p < int(patterns.size()); ++p) {
     ulong_t S = ~0ULL;
-    int m = patterns[p].size();
+    int m = (int) patterns[p].size();
     ulong_t msb = 1ULL << (m - 1);
     for(int j = 0; j < n; ++j) {
       int c = alphabet_hash[(unsigned char) txt[j]];

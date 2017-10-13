@@ -110,7 +110,7 @@ void processAlgorithm(const vector<string> &pats, argument &args) {
 
   if(args.e_max > 0 && (args.algo != "" && args.algo != "wum" &&
     args.algo != "sell" && args.algo != "ukk")) {
-    printf("Invalid approximate matching algorithm. --help for more info.\n");
+    printf("Invalid approximate matching algorithm: %s. --help for more info.\n", args.algo.c_str());
     exit(0);
   }
   if(args.algo == "") {
@@ -118,24 +118,16 @@ void processAlgorithm(const vector<string> &pats, argument &args) {
       if(pats.size() > 1) {
         args.algo = "aho";
       }
-      else if(max_pat_len < 5) {
-        args.algo = "bf";
-      }
-      else if(max_pat_len <= shiftor::max_pat_len) {
+      else if(max_pat_len <= 8) {
         args.algo = "sho";
       }
       else {
         args.algo = "boy";
       }
     }
-    else {
+    else { //aprox matching
       long long max_fsize = maxFilesize(args.txtfiles);
-      if(max_fsize >= (1LL << 30) && 
-        ((max_pat_len <= 100 && args.e_max <= 5) || 
-          (max_pat_len <= 20 && args.e_max <= 14))) {
-        args.algo = "ukk";
-      }
-      else if(max_fsize < (1LL << 30) && max_fsize >= (1LL << 20) * 100 && 
+      if(max_fsize >= (1LL << 30) &&
         ((max_pat_len <= 105 && args.e_max <= 4) || 
           (max_pat_len <= 75 && args.e_max <= 5) ||
           (max_pat_len <= 20 && args.e_max <= 14))) {
@@ -143,6 +135,10 @@ void processAlgorithm(const vector<string> &pats, argument &args) {
       }
       else if(max_pat_len <= wumanber::max_pat_len) {
         args.algo = "wum";
+      }
+      else if(max_fsize < (1LL << 30) && max_fsize >= (1LL << 20) * 100 && 
+        max_pat_len <= 105 && args.e_max <= 5) {
+        args.algo = "ukk";
       }
       else {
         args.algo = "sell";

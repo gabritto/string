@@ -80,5 +80,5 @@ static void print_help() {
   puts("\t-p, --pattern=FILE\tobtain patterns from FILE");
   puts("\t-c, --count\t\tprint only counts of matching substrings and lines");
   puts("\t-h, --help\t\tdisplay this message");
-  puts("\t-a, --algorithm=A\tforce algorithm A to process the search. A is one of 'aho' (Aho-Corasick), 'boy' (Boyer-Moore), 'bf' (Bruteforce), 'ukk' (Ukkonen), 'sell' (Sellers)");
+  puts("\t-a, --algorithm=A\tforce algorithm A to process the search. A is one of 'aho' (Aho-Corasick), 'boy' (Boyer-Moore), 'bf' (Bruteforce), 'sho' (Shift-Or), 'ukk' (Ukkonen), 'sell' (Sellers), 'wum' (Wu-Manber)");
 }
