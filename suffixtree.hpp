@@ -23,24 +23,28 @@ private:
 class SuffixTree {
 public:
 	SuffixTree(const char *str);
-	~SuffixTree();
+	void print(int v, int level);
+	int search(const char *pat);
 private:
 	struct Node {
 		int l = inf, r = inf;
-		Node **child = NULL;
+		vector<Node*> child;
 		Node *suffix_link = NULL;
 		Node();
 		Node(int l, int r, int alpha_size);
-		~Node();
 	};
 	Text txt;
-	Node *buffer;
-	Node *ptr;
+	vector<int> matches;
+	vector<Node> buffer;
+	int ptr = 0;
+	Node *root;
 	Node* newNode(int l, int r);
 	pair<Node*, pair<int, int>> canonise(Node *u, int l, int r);
 	pair<Node*, bool> testAndSplit(Node *u, int l, int r, int i);
 	pair<Node*, pair<int, int>> update(Node *u, int l, int r, int i);
-	void buildSuffixTree();
+	Node* build();
+	int buildMatches(Node *u);
+	int search(Node *u, const char *pat);
 };
 
 
