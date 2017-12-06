@@ -2,7 +2,8 @@
 #define INDEX_HPP
 
 #include <string>
+#include <vector>
 
-void mainIndex(std::string txtfile);
+void createIndex(std::string txtfile);
 
 #endif

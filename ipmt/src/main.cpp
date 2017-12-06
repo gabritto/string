@@ -1,29 +1,16 @@
-#include <getopt.h>
-#include <cstdio>
-#include <cstring>
-#include <iostream>
-#include <string>
-#include <vector>
-#include "index/index.hpp"
-#include "search/search.hpp"
-
-using namespace std;
+#include "index.hpp"
+#include "search.hpp"
+#include "util.hpp"
 
 int main(int argc, char *argv[]) {
-  if (argc > 1) {
-    if (!strcmp(argv[1], "index")) {
-      if (argc == 3) {
-        main_index(argv[2]);
-      } else {
-        printf(
-            "Invalid format. Index mode needs a textfile and textfile only.");
-      }
-    } else if (!strcmp(argv[1], "search")) {
-      // mainSearch();
-    } else {
-      printf("Invalid format. --help for more info");
-    }
+  argument args;
+  getArgs(args, argc, argv);
+
+  if (args.mode == INDEX) {
+    createIndex(args.file);
+  } else {
+    search(args.pats, args.file);
   }
-  printf("Invalid format. --help for more info.");
+
   return 0;
 }
