@@ -2,3 +2,4 @@
 /src/main
 /src/main.exe
 /bin
+*.out

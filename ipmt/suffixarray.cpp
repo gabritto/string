@@ -52,7 +52,7 @@ private:
     }
     for(int k = 1; k <= log2n; ++k) {
       vector<tuple<int, int, int>> V;
-      int j = 1 << k;
+      int j = 1 << (k - 1);
       for(int i = 0; i < n; ++i) {
         if(i + j >= n) { //second block is empty string (rank -1)
           V.push_back(make_tuple(P[k - 1][i], -1, i));
@@ -80,9 +80,20 @@ private:
     }
   }
 
-  void build_LR() {// TODO
+  void recurse_LR(int l, int r) {
+    if(r - l > 1) {
+      int h = (l + r)/2;
+      Llcp[h] = lcp_P(SArr[l], SArr[h]);
+      Rlcp[h] = lcp_P(SArr[r], SArr[h]);
+      recurse_LR(l, h);
+      recurse_LR(h, r);
+    }
+  }
+
+  void build_LR() {
     Llcp.assign(n, 0);
     Rlcp.assign(n, 0);
+    recurse_LR(0, n - 1);
   }
 
   int lcp_P(int i, int j) { //computes lcp(txt[i:], txt[j:])
@@ -150,7 +161,8 @@ private:
 
   int pred(const char *pat) { //pred is in [l, r)
     int m = strlen(pat);
-    int L = lcp(pat, txt + SArr[0]), R = lcp(pat, txt + SArr[n - 1]);
+    int L = lcp(pat, txt + SArr[0]),
+        R = lcp(pat, txt + SArr[n - 1]);
     if(R == m || txt[SArr[n - 1] + R] < pat[R]) { //txt[SArr[n - 1]] <=m pat
       return n - 1;
     }
@@ -196,16 +208,23 @@ public:
     buildOrderedHash();
     build_P();
     build_SArr();
+    build_LR();
   }
 
   int search(const char *pat) {
     int l = succ(pat);
     int r = pred(pat);
+    cout << l << " " << r << endl;
     if(l > r)
       return 0;
     else
       return r - l + 1;
   }
+
+  vector<int> getSuffixArray() {
+    return SArr;
+  }
+
 
 };
 char txt[200];
@@ -215,5 +234,16 @@ int main () {
   scanf(" %s", txt);
   SuffixArray SA(txt);
   scanf(" %s", pat);
+  /*
+  vector<int> sa = SA.getSuffixArray();
+  for(int i = 0; txt[i] != '\0'; ++i) {
+    cout << sa[i] << " ";
+  }
+  cout << endl;
+  for(int i = 0; txt[i] != '\0'; ++i) {
+    printf("%s\n", txt + sa[i]);
+  }
+  cout << endl;
+  */
   printf("%d\n", SA.search(pat));
 }
