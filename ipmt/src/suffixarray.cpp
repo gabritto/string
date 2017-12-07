@@ -26,7 +26,7 @@ void SuffixArray::buildOrderedHash() {
   }
 }
 
-void SuffixArray::build_P() {
+void SuffixArray::buildP() {
   P.assign(log2n + 1, vector<int>(n, -1));
   for (int i = 0; i < n; ++i) {
     unsigned char ch = txt[i];
@@ -55,30 +55,30 @@ void SuffixArray::build_P() {
   }
 }
 
-void SuffixArray::build_SArr() {
+void SuffixArray::buildSArr() {
   SArr.assign(n, -1);
   for (int i = 0; i < n; ++i) {
     SArr[P[log2n][i]] = i;
   }
 }
 
-void SuffixArray::recurse_LR(int l, int r) {
+void SuffixArray::recurseLR(int l, int r) {
   if (r - l > 1) {
     int h = (l + r) / 2;
-    Llcp[h] = lcp_P(SArr[l], SArr[h]);
-    Rlcp[h] = lcp_P(SArr[r], SArr[h]);
-    recurse_LR(l, h);
-    recurse_LR(h, r);
+    Llcp[h] = lcpP(SArr[l], SArr[h]);
+    Rlcp[h] = lcpP(SArr[r], SArr[h]);
+    recurseLR(l, h);
+    recurseLR(h, r);
   }
 }
 
-void SuffixArray::build_LR() {
+void SuffixArray::buildLR() {
   Llcp.assign(n, 0);
   Rlcp.assign(n, 0);
-  recurse_LR(0, n - 1);
+  recurseLR(0, n - 1);
 }
 
-int SuffixArray::lcp_P(int i, int j) {  // computes lcp(txt[i:], txt[j:])
+int SuffixArray::lcpP(int i, int j) {  // computes lcp(txt[i:], txt[j:])
   if (i == j) return (n - i);
   int lcp = 0;
   for (int k = log2n; k >= 0 && i < n && j < n; k--) {
@@ -178,9 +178,9 @@ SuffixArray::SuffixArray(char *txt) {
   n = strlen(txt);
   log2n = ceilLog2(n);
   buildOrderedHash();
-  build_P();
-  build_SArr();
-  build_LR();
+  buildP();
+  buildSArr();
+  buildLR();
 }
 
 SuffixArray::SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp,

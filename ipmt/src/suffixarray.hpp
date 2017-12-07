@@ -17,11 +17,11 @@ class SuffixArray {
   vector<int> hash;
   
   void buildOrderedHash();
-  void build_P();
-  void build_SArr();
-  void recurse_LR(int l, int r);
-  void build_LR();
-  int lcp_P(int i, int j);  // computes lcp(txt[i:], txt[j:])
+  void buildP();
+  void buildSArr();
+  void recurseLR(int l, int r);
+  void buildLR();
+  int lcpP(int i, int j);  // computes lcp(txt[i:], txt[j:])
   int lcp(const char *u, const char *v);
   int succ(const char *pat);
   int pred(const char *pat);
