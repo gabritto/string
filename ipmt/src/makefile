@@ -1,5 +1,5 @@
-OBJS = main.cpp util.o index.o search.o
-CC = g++
+OBJS = main.cpp util.o index.o search.o suffixarray.o
+CC = c++-7
 CFLAGS = -c
 LFLAGS = 
 VFLAGS = -std=c++11 -O2
@@ -18,6 +18,9 @@ index.o: index.cpp index.hpp
 
 search.o: search.cpp search.hpp
 	$(CC) $(CFLAGS) $(VFLAGS) search.cpp
+
+suffixarray.o: suffixarray.cpp suffixarray.hpp
+	$(CC) $(CFLAGS) $(VFLAGS) suffixarray.cpp
 
 
 clean:

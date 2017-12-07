@@ -1,32 +1,33 @@
 #include "index.hpp"
 #include <fstream>
 #include <string>
-//#include "suffixarray.hpp"
+#include "suffixarray.hpp"
+#include "util.hpp"
 
 using namespace std;
 
-static vector<int> countChars(string txt_filename);
+static vector<int> countChars(char *txt);
 
 void createIndex(string txtfile) {
-  //vector<int> suffix_array = createSuffixArray(txtfile);
-  vector<int> freq = countChars(txtfile);
-  //encode(suffix_array, freq);
+  char *txt = read(txtfile);
+  SuffixArray SA(txt);
+  vector<int> freq = countChars(txt);
+  /*for(auto v : SA.SArr) {
+    printf("%d ", v);
+  }
+  puts("");
+  for(int i = 0; i < freq.size(); ++i) {
+    if(freq[i] > 0) printf("(%c %d %d) ", i, i, freq[i]);
+  }
+  puts("");*/
+
+  // encode
 }
 
-static vector<int> countChars(string txt_filename) {
-  ifstream txt_file(txt_filename);
-  if (txt_file.fail()) {
-    printf("Error opening file: %s.", txt_filename.c_str());
-    exit(0);
-  }
-
-  string txt;
+static vector<int> countChars(char *txt) {
   vector<int> freq(256, 0);
-  while (getline(txt_file, txt)) {
-    for (unsigned char ch : txt) {
-      ++freq[ch];
-    }
+  for (int i = 0; txt[i] != '\0'; ++i) {
+    ++freq[(unsigned char)txt[i]];
   }
-  txt_file.close();
   return freq;
 }

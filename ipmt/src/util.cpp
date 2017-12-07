@@ -23,11 +23,13 @@ void getArgs(argument &args, int argc, char *argv[]) {
   int idxptr;
 
   args.mode = findMode(argc, argv);
+
   if (args.mode == INDEX) {
     if (argc == 3) {
       args.file = argv[2];
     } else {
-      printf("Invalid format. --help for more info");
+      printf("Invalid format. --help for more info\n");
+      exit(0);
     }
   }
 
@@ -55,7 +57,7 @@ void getArgs(argument &args, int argc, char *argv[]) {
         args.pats.push_back(argv[optind]);
         args.file = argv[optind + 1];
       } else {
-        printf("Invalid format. --help for more info");
+        printf("Invalid format. --help for more info\n");
         exit(0);
       }
     } else {
@@ -64,17 +66,35 @@ void getArgs(argument &args, int argc, char *argv[]) {
   }
 }
 
+char *read(string filename) {
+  FILE *file = fopen(filename.c_str(), "rb");
+  if (file == NULL) {
+    printf("Failed to open file: %s.\n", filename.c_str());
+    exit(0);
+  } else {
+    fseek(file, 0, SEEK_END);
+    int size = ftell(file);
+    rewind(file);
+
+    char *data = new char[size];
+    fread(data, 1, size, file);
+    fclose(file);
+    return data;
+  }
+}
+
 static bool findMode(int argc, char *argv[]) {
   bool mode;
   if (argc < 2) {
-    printf("Invalid format. --help for more info");
+    printf("Invalid format. --help for more info.\n");
+    exit(0);
   } else {
     if (strcmp(argv[1], "index") == 0) {
       mode = false;
     } else if (strcmp(argv[1], "search") == 0) {
       mode = true;
     } else {
-      printf("Invalid format. --help for more info");
+      printf("Invalid format. --help for more info.\n");
       exit(0);
     }
   }
@@ -84,7 +104,7 @@ static bool findMode(int argc, char *argv[]) {
 static void getPatterns(argument &args) {
   ifstream pat_file(args.patfile);
   if (pat_file.fail()) {
-    printf("Failed to open file: %s.", args.patfile.c_str());
+    printf("Failed to open file: %s.\n", args.patfile.c_str());
     exit(0);
   } else {
     string pat;
