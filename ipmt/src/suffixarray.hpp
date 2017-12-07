@@ -27,8 +27,8 @@ class SuffixArray {
   int pred(const char *pat);
 
  public:
-  SuffixArray(char *str);
-  SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp);
+  SuffixArray(char *txt);
+  SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp, char *txt);
   vector<int> SArr, Llcp, Rlcp;
   int search(const char *pat);
 };

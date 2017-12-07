@@ -173,18 +173,23 @@ int SuffixArray::pred(const char *pat) {  // pred is in [l, r)
   return l;
 }
 
-SuffixArray::SuffixArray(char *str)
-    : log2n(ceilLog2(strlen(str))), n(strlen(str)), txt(str) {
+SuffixArray::SuffixArray(char *txt) {
+  this->txt = txt;
+  n = strlen(txt);
+  log2n = ceilLog2(n);
   buildOrderedHash();
   build_P();
   build_SArr();
   build_LR();
 }
 
-SuffixArray::SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp) {
+SuffixArray::SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp,
+                         char *txt) {
   this->SArr = SArr;
   this->Llcp = Llcp;
   this->Rlcp = Rlcp;
+  this->txt = txt;
+  n = strlen(txt);
 }
 
 int SuffixArray::search(const char *pat) {
