@@ -8,7 +8,7 @@
 using namespace std;
 
 static int ceilLog2(int n);
-static const int sigma = 256;  // ASCII characters
+const int sigma = 256;  // ASCII characters
 
 void SuffixArray::buildOrderedHash() {
   hash = vector<int>(256);
@@ -100,7 +100,7 @@ int SuffixArray::lcp(const char *u, const char *v) {
 }
 
 int SuffixArray::succ(const char *pat) {  // succ is in (l, r]
-  int m = strlen(pat);
+  int m = (int)strlen(pat);
   int L = lcp(pat, txt + SArr[0]), R = lcp(pat, txt + SArr[n - 1]);
   if (L == m || txt[SArr[0] + L] > pat[L]) {  // txt[SArr[0]] >=m pat
     return 0;
@@ -137,7 +137,7 @@ int SuffixArray::succ(const char *pat) {  // succ is in (l, r]
 }
 
 int SuffixArray::pred(const char *pat) {  // pred is in [l, r)
-  int m = strlen(pat);
+  int m = (int)strlen(pat);
   int L = lcp(pat, txt + SArr[0]), R = lcp(pat, txt + SArr[n - 1]);
   if (R == m || txt[SArr[n - 1] + R] < pat[R]) {  // txt[SArr[n - 1]] <=m pat
     return n - 1;
@@ -175,7 +175,7 @@ int SuffixArray::pred(const char *pat) {  // pred is in [l, r)
 
 SuffixArray::SuffixArray(char *txt) {
   this->txt = txt;
-  n = strlen(txt);
+  n = (int)strlen(txt);
   log2n = ceilLog2(n);
   buildOrderedHash();
   buildP();
@@ -189,7 +189,7 @@ SuffixArray::SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp,
   this->Llcp = Llcp;
   this->Rlcp = Rlcp;
   this->txt = txt;
-  n = strlen(txt);
+  n = (int)strlen(txt);
 }
 
 int SuffixArray::search(const char *pat) {

@@ -9,7 +9,7 @@ std::string encodeInt(int n, int size);
 
 namespace lz77 {
 char* encode(const char* txt, int n, int ls, int la);
-char* decode(const char* code, int n, int ls, int la);
+char* decode(const char* code, int m, int ls, int la);
 
 }  // namespace lz77
 

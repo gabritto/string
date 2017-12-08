@@ -28,7 +28,7 @@ void getArgs(argument &args, int argc, char *argv[]) {
     if (argc == 3) {
       args.file = argv[2];
     } else {
-      printf("Invalid format. --help for more info\n");
+      printf("Invalid format. --help for more info.\n");
       exit(0);
     }
   }
@@ -53,11 +53,11 @@ void getArgs(argument &args, int argc, char *argv[]) {
     }
 
     if (args.patfile == "") {
-      if (argc - optind == 2) {
-        args.pats.push_back(argv[optind]);
-        args.file = argv[optind + 1];
+      if (argc >= 4) {
+        args.pats.push_back(argv[argc - 2]);
+        args.file = argv[argc - 1];
       } else {
-        printf("Invalid format. --help for more info\n");
+        printf("Invalid format. --help for more info.");
         exit(0);
       }
     } else {
@@ -73,10 +73,11 @@ char *read(string filename) {
     exit(0);
   } else {
     fseek(file, 0, SEEK_END);
-    int size = ftell(file);
+    int size = (int)ftell(file);
     rewind(file);
 
-    char *data = new char[size];
+    char *data = new char[size + 1];
+    data[size] = '\0';
     fread(data, 1, size, file);
     fclose(file);
     return data;
@@ -93,6 +94,9 @@ static bool findMode(int argc, char *argv[]) {
       mode = false;
     } else if (strcmp(argv[1], "search") == 0) {
       mode = true;
+    } else if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) {
+      print_help();
+      exit(0);
     } else {
       printf("Invalid format. --help for more info.\n");
       exit(0);
@@ -117,8 +121,9 @@ static void getPatterns(argument &args) {
 }
 
 static void print_help() {
+  puts("");
   puts("Usage (index mode): ipmt index TEXTFILE");
-  puts("Create a encoded index of TEXTFILE");
+  puts("Create an encoded index of TEXTFILE");
   puts("Example: ipmt index text.txt");
   puts("");
   puts("Usage (search mode): ipmt search [OPTIONS] PATTERN INDEXFILE");

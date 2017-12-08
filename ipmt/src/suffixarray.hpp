@@ -5,14 +5,13 @@
 #include <tuple>
 #include <vector>
 
-using namespace std;
-
+extern const int sigma;  // ASCII characters
 
 class SuffixArray {
  private:
-  vector<vector<int>> P;
+  std::vector<std::vector<int>> P;
   const char *txt;
-  vector<int> hash;
+  std::vector<int> hash;
   
   void buildOrderedHash();
   void buildP();
@@ -26,8 +25,8 @@ class SuffixArray {
 
  public:
   SuffixArray(char *txt);
-  SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp, char *txt);
-  vector<int> SArr, Llcp, Rlcp;
+  SuffixArray(std::vector<int> SArr, std::vector<int> Llcp, std::vector<int> Rlcp, char *txt);
+  std::vector<int> SArr, Llcp, Rlcp;
   int n, log2n;
   int search(const char *pat);
 };

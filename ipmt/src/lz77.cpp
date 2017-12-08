@@ -14,8 +14,7 @@ string encodeInt(int n,
   int encoded = 0;
   string code;
   while (encoded < size) {
-    unsigned char ch = n;
-    code.push_back(ch);
+    code.push_back((unsigned char) n);
     n >>= char_size;
     encoded += char_size;
   }
@@ -59,13 +58,12 @@ char *encode(const char *txt, int n, int ls, int la) {
   return ret;
 }
 
-char *decode(const char *code, int ls, int la) {
+char *decode(const char *code, int m, int ls, int la) {
   string txt;
   p_size = ceilLog2(ls);
   l_size = ceilLog2(la + 1);
 
   int c_size = p_size + l_size + 1;
-  int m = strlen(code);
   int k = m / c_size;
 
   int start = -ls, mid = 0, end = la;
