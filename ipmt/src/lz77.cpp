@@ -19,6 +19,7 @@ string encodeInt(int n,
     n >>= char_size;
     encoded += char_size;
   }
+  reverse(code.begin(), code.end());
   return code;
 }
 
@@ -48,11 +49,11 @@ pair<char *, int> encode(const char *txt, int n, int ls, int la) {
   l_size = ceilLog2(la + 1);
   int p_bytes = (p_size + char_size - 1) / char_size;
   int l_bytes = (l_size + char_size - 1) / char_size;
-  /*
-  printf("p_bytes: %d l_bytes: %d\n", p_bytes, l_bytes);
-  puts("texto antes da compressao");
-  for(int i = 0; i < n; ++i) {
-    printf("%d ", (unsigned char) txt[i]);
+  
+  //printf("p_bytes: %d l_bytes: %d\n", p_bytes, l_bytes);
+  //puts("texto antes da compressao");
+  /*for(int i = 0; i < n; ++i) {
+    printf("%d\n", (unsigned char) txt[i]);
   }
   puts("");
   */
@@ -112,10 +113,10 @@ pair<char *, int> decode(const char *code, int m, int ls, int la) {
 
   char *ret = new char[txt.size()];
   txt.copy(ret, string::npos, 0);
-  /*
-  puts("texto depois da decompressao");
-  for (int i = 0; i < txt.size() - 1; ++i) {
-    printf("%d ", (unsigned char) ret[i]);
+  
+  //puts("texto depois da decompressao");
+  /*for (int i = 0; i < txt.size() - 1; ++i) {
+    printf("%d\n", (unsigned char) ret[i]);
   }
   puts("");
   */

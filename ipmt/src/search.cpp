@@ -49,17 +49,19 @@ void search(vector<string> &pats, string &idxfile) {
   }
   puts("");
   */
+  
   vector<int> SArr(n), Llcp(n), Rlcp(n), freq(sigma);
   decode(SArr, code, n * bytes, bytes);
+
   decode(Llcp, code + n * bytes, n * bytes, bytes);
   decode(Rlcp, code + 2 * n * bytes, n * bytes, bytes);
   decode(freq, code + 3 * n * bytes, sigma * bytes, bytes);
   delete[] code;
-  /*for(int i = 0; i < n; ++i) {
-    printf("%d ", Llcp[i]);
+  for (int i = 0; i < Rlcp.size(); ++i) {
+    //printf("%d\n", Rlcp[i]);
   }
-  puts("");*/
   char *txt = buildTxt(SArr, freq);
+  //printf("%s", txt);
   SuffixArray SA(SArr, Llcp, Rlcp, txt);
   for (string &pat : pats) {
     char *p = new char[pat.size() + 1];

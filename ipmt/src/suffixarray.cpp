@@ -103,10 +103,12 @@ int SuffixArray::succ(const char *pat) {  // succ is in (l, r]
   int m = (int)strlen(pat);
   
   int L = lcp(pat, txt + SArr[0]), R = lcp(pat, txt + SArr[n - 1]);
-  if (L == m || txt[SArr[0] + L] > pat[L]) {  // txt[SArr[0]] >=m pat
+  if (L == m || (unsigned char) txt[SArr[0] + L] >
+                    (unsigned char) pat[L]) {  // txt[SArr[0]] >=m pat
     return 0;
   }
-  if (R < m && txt[SArr[n - 1] + R] < pat[R]) {  // txt[SArr[n - 1]] <m pat
+  if (R < m && (unsigned char) txt[SArr[n - 1] + R] <
+                   (unsigned char) pat[R]) {  // txt[SArr[n - 1]] <m pat
     return n;
   }
   int l = 0, r = n - 1;
@@ -126,7 +128,7 @@ int SuffixArray::succ(const char *pat) {  // succ is in (l, r]
         H = Rlcp[h];
       }
     }
-    if (H == m || pat[H] < txt[SArr[h] + H]) {
+    if (H == m || (unsigned char)pat[H] < (unsigned char) txt[SArr[h] + H]) {
       r = h;
       R = H;
     } else {
@@ -140,10 +142,12 @@ int SuffixArray::succ(const char *pat) {  // succ is in (l, r]
 int SuffixArray::pred(const char *pat) {  // pred is in [l, r)
   int m = (int)strlen(pat);
   int L = lcp(pat, txt + SArr[0]), R = lcp(pat, txt + SArr[n - 1]);
-  if (R == m || txt[SArr[n - 1] + R] < pat[R]) {  // txt[SArr[n - 1]] <=m pat
+  if (R == m || (unsigned char)txt[SArr[n - 1] + R] <
+                   (unsigned char) pat[R]) {  // txt[SArr[n - 1]] <=m pat
     return n - 1;
   }
-  if (L < m && txt[SArr[0] + L] > pat[L]) {  // txt[SArr[0]] >m pat
+  if (L < m && (unsigned char)txt[SArr[0] + L] >
+                   (unsigned char) pat[L]) {  // txt[SArr[0]] >m pat
     return -1;
   }
   int l = 0, r = n - 1;
@@ -163,7 +167,7 @@ int SuffixArray::pred(const char *pat) {  // pred is in [l, r)
         H = Rlcp[h];
       }
     }
-    if (H == m || pat[H] > txt[SArr[h] + H]) {
+    if (H == m || (unsigned char) pat[H] > (unsigned char) txt[SArr[h] + H]) {
       l = h;
       L = H;
     } else {

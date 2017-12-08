@@ -21,16 +21,16 @@ vector<vector<int>> buildFSM(const char *pat, int l, int r) {
   if (l >= r) {
     return fsm;
   }
-  fsm[0][alphabet_hash[pat[l]]] = 1;
+  fsm[0][alphabet_hash[(unsigned char) pat[l]]] = 1;
   int brd = 0;
   for (int i = 1; i <= m; ++i) {
     for (int s = 0; s < alphabet_size; ++s) {
-      printf("(%d %d)\n", i, m);
+
       fsm[i][s] = fsm[brd][s];
     }
     if (i < m) {
-      fsm[i][alphabet_hash[pat[l + i]]] = i + 1;
-      brd = fsm[brd][alphabet_hash[pat[l + i]]];
+      fsm[i][alphabet_hash[(unsigned char) pat[l + i]]] = i + 1;
+      brd = fsm[brd][alphabet_hash[(unsigned char) pat[l + i]]];
     }
   }
   return fsm;

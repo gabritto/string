@@ -25,9 +25,9 @@ sarr, llcp, rlcp, freq = codificacao
 
 void buildIndex(string txtfile) {
   char *txt = read(txtfile);
-  printf("%d\n", strlen(txt));
+  //printf("%d\n", strlen(txt));
   SuffixArray SA(txt);
-  printf("vish\n");
+  //printf("vish\n");
   vector<int> freq = countChars(txt);
   /*for(auto v : SA.SArr) {
     printf("%d ", v);
@@ -58,19 +58,14 @@ void buildIndex(string txtfile) {
   fwrite(&la, sizeof(int), 1, idxfile);
 
   encode(code, SA.SArr, bytes);
+  for (int i = 0; i < SA.SArr.size(); ++i) {
+    //printf("%d\n", SA.SArr[i]);
+  }
+
   encode(code + n * bytes, SA.Llcp, bytes);
   encode(code + 2 * n * bytes, SA.Rlcp, bytes);
   encode(code + 3 * n * bytes, freq, bytes);
-  /*for (int i = 0; i < n; ++i) {
-    printf("%d ", SA.Llcp[i]);
-  }
-  puts("");*/
-  /*
-  for (int i = 0; i < size; ++i) {
-    printf("%d ", (unsigned char) code[i]);
-  }
-  puts("");
-  */
+ 
   char *compressed;
   int c_size;
   tie(compressed, c_size) = lz77::encode(code, size, ls, la);
@@ -94,6 +89,7 @@ static void encode(char *dest, vector<int> &src, int bytes) {
       ++ptr;
     }
   }
+  assert(n * bytes == ptr);
 }
 
 static vector<int> countChars(char *txt) {

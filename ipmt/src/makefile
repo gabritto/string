@@ -4,7 +4,7 @@ CFLAGS = -c
 LFLAGS = 
 VFLAGS = -std=c++11 -O2 -g
 
-all: main
+all: main clean
 	
 main: $(OBJS)
 	@mkdir -p ../bin/
