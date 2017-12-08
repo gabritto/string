@@ -189,10 +189,12 @@ SuffixArray::SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp,
   this->Llcp = Llcp;
   this->Rlcp = Rlcp;
   this->txt = txt;
-  n = (int)strlen(txt);
+  this->n = (int)strlen(txt);
 }
 
 int SuffixArray::search(const char *pat) {
+  printf("%s %s\n", txt, pat);
+  fflush(stdout);
   int l = succ(pat);
   int r = pred(pat);
   if (l > r)

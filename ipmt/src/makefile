@@ -1,10 +1,10 @@
 OBJS = main.cpp util.o index.o search.o suffixarray.o aho.o lz77.o
-CC = g++
+CC = c++-7
 CFLAGS = -c
 LFLAGS = 
 VFLAGS = -std=c++11 -O2 -g
 
-all: main clean
+all: main
 	
 main: $(OBJS)
 	@mkdir -p ../bin/

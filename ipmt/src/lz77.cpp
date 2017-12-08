@@ -2,31 +2,32 @@
 #include <algorithm>
 #include <cstring>
 #include <string>
+#include <cstdio>
 #include <tuple>
 #include "aho.hpp"
 
 using namespace std;
 
-static const int char_size = sizeof(char);
+static const int char_size = 8;
 
 string encodeInt(int n,
                  int size) {  //@size in bits of @n's codification
   int encoded = 0;
   string code;
   while (encoded < size) {
-    code.push_back((unsigned char) n);
+    code.push_back(n & 255);
     n >>= char_size;
     encoded += char_size;
   }
   return code;
 }
 
-int decodeInt(char *n,
+int decodeInt(const char *n,
               int size) {  //@size in bits of @n's codification. size <= 32
   int decoded = 0;
   int decode = 0;
   while (decoded < size) {
-    decode = (decode << char_size) | *n;
+    decode = (decode << char_size) | (unsigned char) *n;
     ++n;
     decoded += char_size;
   }
@@ -37,41 +38,56 @@ namespace lz77 {
 
 static int p_size, l_size;
 static pair<int, int> prefixMatch(const char *w, int start, int mid, int end);
-static tuple<int, int, char> decode(const char *code);
+static tuple<int, int, char> decodeTuple(const char *code);
 static int ceilLog2(int n);
 
-char *encode(const char *txt, int n, int ls, int la) {
+pair<char *, int> encode(const char *txt, int n, int ls, int la) {
   string code;
   int start = -ls, mid = 0, end = la;
   p_size = ceilLog2(ls);
   l_size = ceilLog2(la + 1);
-
+  int p_bytes = (p_size + char_size - 1) / char_size;
+  int l_bytes = (l_size + char_size - 1) / char_size;
+  /*
+  printf("p_bytes: %d l_bytes: %d\n", p_bytes, l_bytes);
+  for(int i = 0; i < n; ++i) {
+    printf("%d ", (unsigned char) txt[i]);
+  }
+  puts("");
+  */
   while (mid <= n) {
     int p, l;
     tie(p, l) = prefixMatch(txt, max(0, start), mid, min(end, n));
     code += encodeInt(p, p_size) + encodeInt(l, l_size) + txt[mid + l];
+    //printf("%d %d %d\n", p, l, (unsigned char) txt[mid + l]);
     start += l + 1, mid += l + 1, end += l + 1;
   }
-  char *ret = new char[code.size() + 1];
+  char *ret = new char[code.size()];
   code.copy(ret, string::npos, 0);
-  ret[code.size()] = '\0';
-  return ret;
+  return {ret, code.size()};
 }
 
-char *decode(const char *code, int m, int ls, int la) {
+pair<char *, int> decode(const char *code, int m, int ls, int la) {
   string txt;
   p_size = ceilLog2(ls);
   l_size = ceilLog2(la + 1);
-
-  int c_size = p_size + l_size + 1;
+  int p_bytes = (p_size + char_size - 1) / char_size;
+  int l_bytes = (l_size + char_size - 1) / char_size;
+  int c_size = p_bytes + l_bytes + 1;
   int k = m / c_size;
 
   int start = -ls, mid = 0, end = la;
-
+  /*
+  for (int i = 0; i < m; ++i) {
+    printf("%d ", (unsigned char)code[i]);
+  }
+  puts("");
+  */
   for (int i = 0; i < k; ++i) {
     int p, l;
     unsigned char ch;
-    tie(p, l, ch) = decode(code + c_size * i);
+    tie(p, l, ch) = decodeTuple(code + c_size * i);
+    //printf("%d %d %d\n", p, l, ch);
     for (int s = 0; s < l; ++s) {
       txt.push_back(txt[start + p + s]);
     }
@@ -82,8 +98,8 @@ char *decode(const char *code, int m, int ls, int la) {
   }
 
   char *ret = new char[txt.size()];
-  memcpy(ret, txt.c_str(), txt.size());
-  return ret;
+  txt.copy(ret, string::npos, 0);
+  return {ret, txt.size() - 1};
 }
 
 // state is the current state in the aho-corasick fsm but also
@@ -95,11 +111,10 @@ static pair<int, int> prefixMatch(const char *w, int start, int mid, int end) {
   int state = 0;
 
   for (int i = start; i < end; ++i) {
-
     int c = aho::alphabet_hash[(unsigned char)w[i]];
     state = fsm[state][c];
     if (state > l && i - state + 1 < mid) {
-      p = i - state + 1;
+      p = i - start - state + 1;
       l = state;
     }
   }
@@ -107,21 +122,15 @@ static pair<int, int> prefixMatch(const char *w, int start, int mid, int end) {
   return make_pair(p, l);
 }
 
-static tuple<int, int, char> decode(const char *code) {
+static tuple<int, int, char> decodeTuple(const char *code) {
   int p = 0;
-  int pos = 0;
-  while (pos < (p_size + char_size - 1) / char_size) {
-    p <<= char_size;
-    p |= code[pos];
-    pos += 1;
-  }
+  int p_bytes = (p_size + char_size - 1) / char_size;
   int l = 0;
-  while (pos < (l_size + char_size - 1) / char_size) {
-    l <<= char_size;
-    l |= code[pos];
-    pos += 1;
-  }
-  return make_tuple(p, l, code[pos]);
+  int l_bytes = (l_size + char_size - 1) / char_size;
+  p = decodeInt(code, p_bytes * char_size);
+  l = decodeInt(code + p_bytes, l_bytes * char_size);
+  char ch = code[p_bytes + l_bytes]; 
+  return make_tuple(p, l, ch);
 }
 
 static int ceilLog2(int n) {
