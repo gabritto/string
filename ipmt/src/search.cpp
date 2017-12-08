@@ -30,7 +30,7 @@ void search(vector<string> &pats, string &idxfile) {
   fread(str, sizeof(char), n, file);
   char *encoded_SArr = lz77::decode(str, n, ls, la);
   decode(SArr, encoded_SArr, n, bytes);
-
+  delete[] encoded_SArr;
   /*
   printf("%d %d %d %d\n", n, bytes, ls, la);
   for(int i = 0; i < n; ++i) {
@@ -42,10 +42,12 @@ void search(vector<string> &pats, string &idxfile) {
   fread(str, sizeof(char), n, file);
   char *encoded_Llcp = lz77::decode(str, n, ls, la);
   decode(Llcp, encoded_Llcp, n, bytes);
+  delete[] encoded_Llcp;
 
   fread(str, sizeof(char), n, file);
   char *encoded_Rlcp = lz77::decode(str, n, ls, la);
   decode(Rlcp, encoded_Rlcp, n, bytes);
+  delete[] encoded_Rlcp;
 
   fread(&n, sizeof(int), 1, file);
   fread(&bytes, sizeof(int), 1, file);
@@ -57,9 +59,11 @@ void search(vector<string> &pats, string &idxfile) {
   char *encoded_freq = lz77::decode(str, n, ls, la);
   vector<int> freq(sigma);
   decode(freq, encoded_freq, n, bytes);
-  char *txt = buildTxt(SArr, freq);
+  delete[] encoded_freq;
 
+  char *txt = buildTxt(SArr, freq);
   SuffixArray SA(SArr, Llcp, Rlcp, txt);
+  
   for (string pat : pats) {
     char *p = new char[pat.size() + 1];
     pat.copy(p, string::npos, 0);
@@ -67,6 +71,7 @@ void search(vector<string> &pats, string &idxfile) {
     printf("Ocurrences of %s: %d\n", p, SA.search(p));
     delete[] p;
   }
+  delete[] txt;
 }
 
 static void decode(vector<int> &dest, char *src, int n, int bytes) {
