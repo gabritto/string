@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
   getArgs(args, argc, argv);
 
   if (args.mode == INDEX) {
-    createIndex(args.file);
+    buildIndex(args.file);
   } else {
     search(args.pats, args.file);
   }

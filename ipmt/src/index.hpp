@@ -4,6 +4,6 @@
 #include <string>
 #include <vector>
 
-void createIndex(std::string txtfile);
+void buildIndex(std::string txtfile);
 
 #endif

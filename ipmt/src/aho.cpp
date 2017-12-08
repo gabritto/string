@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cstring>
 #include <vector>
-
 using namespace std;
 
 static const int sigma = 256;
@@ -15,7 +14,7 @@ static int getAlphabetHash(const char *pat, int l, int r);
 vector<vector<int>> buildFSM(const char *pat, int l, int r) {
   int m = r - l;
   int alphabet_size = getAlphabetHash(pat, l, r);
-  vector<vector<int>> fsm(m, vector<int>(alphabet_size, 0));
+  vector<vector<int>> fsm(m + 1, vector<int>(alphabet_size, 0));
   for (int i = 0; i < alphabet_size; ++i) {
     fsm[0][i] = 0;
   }

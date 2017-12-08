@@ -7,31 +7,55 @@
 
 using namespace std;
 
+static const int char_size = sizeof(char);
+
+string encodeInt(int n,
+                 int size) {  //@size in bits of @n's codification
+  int encoded = 0;
+  string code;
+  while (encoded < size) {
+    unsigned char ch = n;
+    code.push_back(ch);
+    n >>= char_size;
+    encoded += char_size;
+  }
+  return code;
+}
+
+int decodeInt(char *n,
+              int size) {  //@size in bits of @n's codification. size <= 32
+  int decoded = 0;
+  int decode = 0;
+  while (decoded < size) {
+    decode = (decode << char_size) | *n;
+    ++n;
+    decoded += char_size;
+  }
+  return decode;
+}
+
 namespace lz77 {
 
-static const int char_size = 8;
 static int p_size, l_size;
-
-static string encode_int(int n, int size);
 static pair<int, int> prefixMatch(const char *w, int start, int mid, int end);
 static tuple<int, int, char> decode(const char *code);
 static int ceilLog2(int n);
 
-char *encode(const char *txt, int ls, int la) {
+char *encode(const char *txt, int n, int ls, int la) {
   string code;
   int start = -ls, mid = 0, end = la;
-  int n = strlen(txt);
   p_size = ceilLog2(ls);
   l_size = ceilLog2(la + 1);
 
   while (mid <= n) {
     int p, l;
     tie(p, l) = prefixMatch(txt, max(0, start), mid, min(end, n));
-    code += encode_int(p, p_size) + encode_int(l, l_size) + txt[mid + l];
+    code += encodeInt(p, p_size) + encodeInt(l, l_size) + txt[mid + l];
     start += l + 1, mid += l + 1, end += l + 1;
   }
   char *ret = new char[code.size() + 1];
-  memcpy(ret, code.c_str(), code.size());
+  code.copy(ret, string::npos, 0);
+  ret[code.size()] = '\0';
   return ret;
 }
 
@@ -64,19 +88,6 @@ char *decode(const char *code, int ls, int la) {
   return ret;
 }
 
-static string encode_int(int n,
-                         int size) {  //@size in bits of @n's codification
-  int encoded = 0;
-  string code;
-  while (encoded < size) {
-    unsigned char ch = n;
-    code.push_back(ch);
-    n >>= char_size;
-    encoded += char_size;
-  }
-  return code;
-}
-
 // state is the current state in the aho-corasick fsm but also
 // the size of the largest prefix of look ahead buffer that matches a suffix
 // of w up to position i
@@ -84,7 +95,9 @@ static pair<int, int> prefixMatch(const char *w, int start, int mid, int end) {
   vector<vector<int>> fsm = aho::buildFSM(w, mid, end);
   int p = 0, l = 0;
   int state = 0;
+
   for (int i = start; i < end; ++i) {
+
     int c = aho::alphabet_hash[(unsigned char)w[i]];
     state = fsm[state][c];
     if (state > l && i - state + 1 < mid) {
@@ -92,6 +105,7 @@ static pair<int, int> prefixMatch(const char *w, int start, int mid, int end) {
       l = state;
     }
   }
+
   return make_pair(p, l);
 }
 

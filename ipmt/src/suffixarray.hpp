@@ -11,8 +11,6 @@ using namespace std;
 class SuffixArray {
  private:
   vector<vector<int>> P;
-  int log2n;
-  int n;
   const char *txt;
   vector<int> hash;
   
@@ -30,5 +28,6 @@ class SuffixArray {
   SuffixArray(char *txt);
   SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp, char *txt);
   vector<int> SArr, Llcp, Rlcp;
+  int n, log2n;
   int search(const char *pat);
 };
