@@ -63,7 +63,7 @@ void search(vector<string> &pats, string &idxfile) {
 
   char *txt = buildTxt(SArr, freq);
   SuffixArray SA(SArr, Llcp, Rlcp, txt);
-  
+
   for (string pat : pats) {
     char *p = new char[pat.size() + 1];
     pat.copy(p, string::npos, 0);
@@ -72,6 +72,7 @@ void search(vector<string> &pats, string &idxfile) {
     delete[] p;
   }
   delete[] txt;
+  fclose(file);
 }
 
 static void decode(vector<int> &dest, char *src, int n, int bytes) {
