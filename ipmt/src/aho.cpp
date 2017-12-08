@@ -2,12 +2,12 @@
 #include <algorithm>
 #include <cstring>
 #include <vector>
+#include <cstdio>
 using namespace std;
 
 static const int sigma = 256;
 
 namespace aho {
-
 vector<int> alphabet_hash;
 static int getAlphabetHash(const char *pat, int l, int r);
 
@@ -25,6 +25,7 @@ vector<vector<int>> buildFSM(const char *pat, int l, int r) {
   int brd = 0;
   for (int i = 1; i <= m; ++i) {
     for (int s = 0; s < alphabet_size; ++s) {
+      printf("(%d %d)\n", i, m);
       fsm[i][s] = fsm[brd][s];
     }
     if (i < m) {

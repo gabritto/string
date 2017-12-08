@@ -43,20 +43,29 @@ void search(vector<string> &pats, string &idxfile) {
   }
   puts("");
   */
+  /*
+  for(int i = 0; i < d_sz; ++i) {
+    printf("%d ", code[i]);
+  }
+  puts("");
+  */
   vector<int> SArr(n), Llcp(n), Rlcp(n), freq(sigma);
   decode(SArr, code, n * bytes, bytes);
   decode(Llcp, code + n * bytes, n * bytes, bytes);
   decode(Rlcp, code + 2 * n * bytes, n * bytes, bytes);
   decode(freq, code + 3 * n * bytes, sigma * bytes, bytes);
   delete[] code;
-
+  /*for(int i = 0; i < n; ++i) {
+    printf("%d ", Llcp[i]);
+  }
+  puts("");*/
   char *txt = buildTxt(SArr, freq);
   SuffixArray SA(SArr, Llcp, Rlcp, txt);
   for (string &pat : pats) {
     char *p = new char[pat.size() + 1];
     pat.copy(p, string::npos, 0);
     p[pat.size()] = '\0';
-    printf("Ocurrences of %s: %d\n", SA.search(p));
+    printf("Ocurrences of %s: %d\n", p, SA.search(p));
     delete[] p;
   }
   fclose(file);
@@ -77,6 +86,8 @@ static char *buildTxt(vector<int> &SArr, vector<int> freq) {
   int ptr = 0;
   for (int i = 0; i < m; ++i) {
     for (int j = 0; j < freq[i]; ++j) {
+      assert(ptr < n);
+      assert(SArr[ptr] < n);
       txt[SArr[ptr]] = i;
       ++ptr;
     }

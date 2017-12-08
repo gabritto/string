@@ -25,7 +25,9 @@ sarr, llcp, rlcp, freq = codificacao
 
 void buildIndex(string txtfile) {
   char *txt = read(txtfile);
+  printf("%d\n", strlen(txt));
   SuffixArray SA(txt);
+  printf("vish\n");
   vector<int> freq = countChars(txt);
   /*for(auto v : SA.SArr) {
     printf("%d ", v);
@@ -49,7 +51,7 @@ void buildIndex(string txtfile) {
   char *code = new char[size + 1];
   code[size] = '\0';
   int ls, la;
-  ls = la = 8;
+  ls = la = 255;
 
   fwrite(&n, sizeof(int), 1, idxfile);
   fwrite(&ls, sizeof(int), 1, idxfile);
@@ -59,19 +61,22 @@ void buildIndex(string txtfile) {
   encode(code + n * bytes, SA.Llcp, bytes);
   encode(code + 2 * n * bytes, SA.Rlcp, bytes);
   encode(code + 3 * n * bytes, freq, bytes);
-  
+  /*for (int i = 0; i < n; ++i) {
+    printf("%d ", SA.Llcp[i]);
+  }
+  puts("");*/
+  /*
+  for (int i = 0; i < size; ++i) {
+    printf("%d ", (unsigned char) code[i]);
+  }
+  puts("");
+  */
   char *compressed;
   int c_size;
   tie(compressed, c_size) = lz77::encode(code, size, ls, la);
   fwrite(compressed, sizeof(char), c_size, idxfile);
 
-  /*
-  printf("%d\n", size);
-  for(int i = 0; i < size; ++i) {
-    printf("%d ", (unsigned char) code[i]);
-  }
-  puts("");
-  */
+
   fclose(idxfile);
   delete[] compressed;
   delete[] txt;

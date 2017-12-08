@@ -101,6 +101,7 @@ int SuffixArray::lcp(const char *u, const char *v) {
 
 int SuffixArray::succ(const char *pat) {  // succ is in (l, r]
   int m = (int)strlen(pat);
+  
   int L = lcp(pat, txt + SArr[0]), R = lcp(pat, txt + SArr[n - 1]);
   if (L == m || txt[SArr[0] + L] > pat[L]) {  // txt[SArr[0]] >=m pat
     return 0;
@@ -193,8 +194,6 @@ SuffixArray::SuffixArray(vector<int> SArr, vector<int> Llcp, vector<int> Rlcp,
 }
 
 int SuffixArray::search(const char *pat) {
-  printf("%s %s\n", txt, pat);
-  fflush(stdout);
   int l = succ(pat);
   int r = pred(pat);
   if (l > r)

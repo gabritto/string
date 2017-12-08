@@ -50,6 +50,7 @@ pair<char *, int> encode(const char *txt, int n, int ls, int la) {
   int l_bytes = (l_size + char_size - 1) / char_size;
   /*
   printf("p_bytes: %d l_bytes: %d\n", p_bytes, l_bytes);
+  puts("texto antes da compressao");
   for(int i = 0; i < n; ++i) {
     printf("%d ", (unsigned char) txt[i]);
   }
@@ -64,6 +65,13 @@ pair<char *, int> encode(const char *txt, int n, int ls, int la) {
   }
   char *ret = new char[code.size()];
   code.copy(ret, string::npos, 0);
+  /*
+  puts("texto depois da compressao");
+  for (int i = 0; i < code.size(); ++i) {
+    printf("%d ", (unsigned char) ret[i]);
+  }
+  puts("");
+  */
   return {ret, code.size()};
 }
 
@@ -78,8 +86,10 @@ pair<char *, int> decode(const char *code, int m, int ls, int la) {
 
   int start = -ls, mid = 0, end = la;
   /*
+  printf("p_bytes: %d l_bytes: %d\n", p_bytes, l_bytes);
+  puts("texto antes da decompressao");
   for (int i = 0; i < m; ++i) {
-    printf("%d ", (unsigned char)code[i]);
+    printf("%d ", (unsigned char) code[i]);
   }
   puts("");
   */
@@ -87,9 +97,12 @@ pair<char *, int> decode(const char *code, int m, int ls, int la) {
     int p, l;
     unsigned char ch;
     tie(p, l, ch) = decodeTuple(code + c_size * i);
-    //printf("%d %d %d\n", p, l, ch);
+    /*
+    printf("%d %d %d\n", p, l, (unsigned char) ch);
+    printf("start %d mid %d end %d\n", start, mid, end);
+    */
     for (int s = 0; s < l; ++s) {
-      txt.push_back(txt[start + p + s]);
+      txt.push_back(txt[max(start, 0) + p + s]);
     }
     txt.push_back(ch);
     start += l + 1;
@@ -99,6 +112,13 @@ pair<char *, int> decode(const char *code, int m, int ls, int la) {
 
   char *ret = new char[txt.size()];
   txt.copy(ret, string::npos, 0);
+  /*
+  puts("texto depois da decompressao");
+  for (int i = 0; i < txt.size() - 1; ++i) {
+    printf("%d ", (unsigned char) ret[i]);
+  }
+  puts("");
+  */
   return {ret, txt.size() - 1};
 }
 
