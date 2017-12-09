@@ -34,6 +34,7 @@ void search(vector<string> &pats, string &idxfile) {
 
   char *code;
   int d_sz;
+  double t = clock();
   tie(code, d_sz) = lz77::decode(compressed, sz, ls, la);
   delete[] compressed;
   /*
@@ -62,7 +63,10 @@ void search(vector<string> &pats, string &idxfile) {
   }
   char *txt = buildTxt(SArr, freq);
   //printf("%s", txt);
+  printf("Elapsed DEC: %lf\n", (clock() - t) / CLOCKS_PER_SEC);
+
   SuffixArray SA(SArr, Llcp, Rlcp, txt);
+  t = clock();
   for (string &pat : pats) {
     char *p = new char[pat.size() + 1];
     pat.copy(p, string::npos, 0);
@@ -70,6 +74,8 @@ void search(vector<string> &pats, string &idxfile) {
     printf("Ocurrences of %s: %d\n", p, SA.search(p));
     delete[] p;
   }
+  printf("Elapsed Search: %lf\n", (clock() - t) / CLOCKS_PER_SEC);
+  delete[] txt;
   fclose(file);
 }
 

@@ -2,6 +2,7 @@
 #include <cassert>
 #include <cstdio>
 #include <string>
+#include <time.h>
 #include "lz77.hpp"
 #include "suffixarray.hpp"
 #include "util.hpp"
@@ -26,7 +27,10 @@ sarr, llcp, rlcp, freq = codificacao
 void buildIndex(string txtfile) {
   char *txt = read(txtfile);
   //printf("%d\n", strlen(txt));
+  double t = clock();
   SuffixArray SA(txt);
+  printf("Elapsed SA: %lf\n", (clock() - t) / CLOCKS_PER_SEC);
+
   //printf("vish\n");
   vector<int> freq = countChars(txt);
   /*for(auto v : SA.SArr) {
@@ -51,7 +55,8 @@ void buildIndex(string txtfile) {
   char *code = new char[size + 1];
   code[size] = '\0';
   int ls, la;
-  ls = la = 255;
+  ls = 4095;
+  la = 31;
 
   fwrite(&n, sizeof(int), 1, idxfile);
   fwrite(&ls, sizeof(int), 1, idxfile);
@@ -68,10 +73,14 @@ void buildIndex(string txtfile) {
  
   char *compressed;
   int c_size;
+  FILE *out = fopen("../tests/az.idx_unc", "wb");
+  fwrite(code, sizeof(char), size, out);
+  return;
+  t = clock();
   tie(compressed, c_size) = lz77::encode(code, size, ls, la);
   fwrite(compressed, sizeof(char), c_size, idxfile);
-
-
+  printf("original:%d compressed:%d\n", size >> 10, c_size >> 10);
+  printf("Elapsed ENC: %lf\n", (clock() - t) / CLOCKS_PER_SEC);
   fclose(idxfile);
   delete[] compressed;
   delete[] txt;

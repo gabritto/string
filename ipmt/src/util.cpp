@@ -62,6 +62,7 @@ void getArgs(argument &args, int argc, char *argv[]) {
       }
     } else {
       getPatterns(args);
+      args.file = argv[argc - 1];
     }
   }
 }
@@ -124,10 +125,12 @@ static void print_help() {
   puts("");
   puts("Usage (index mode): ipmt index TEXTFILE");
   puts("Create an encoded index of TEXTFILE");
+  puts("Note that TEXTFILE must have .txt extension.");
   puts("Example: ipmt index text.txt");
   puts("");
   puts("Usage (search mode): ipmt search [OPTIONS] PATTERN INDEXFILE");
   puts("Search for PATTERNFILE in the text file that originated INDEXFILE");
+  puts("Note that INDEXFILE must have .idx extension.");
   puts("Example: ipmt search -c 'hello world' text.idx");
   puts("");
   puts("Options:");
