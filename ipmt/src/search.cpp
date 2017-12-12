@@ -1,5 +1,4 @@
 #include "search.hpp"
-#include <cassert>
 #include <cstdio>
 #include <string>
 #include <vector>
@@ -34,23 +33,13 @@ void search(vector<string> &pats, string &idxfile) {
 
   char *code;
   int d_sz;
+  puts("...Decoding index");
   double t = clock();
   tie(code, d_sz) = lz77::decode(compressed, sz, ls, la);
+  printf("Time elapsed to decode: %lfs", (clock() - t) / CLOCKS_PER_SEC);
   delete[] compressed;
-  /*
-  printf("%d\n", d_sz);
-  for(int i = 0; i < d_sz; ++i) {
-    printf("%d ", decompressed[i]);
-  }
-  puts("");
-  */
-  /*
-  for(int i = 0; i < d_sz; ++i) {
-    printf("%d ", code[i]);
-  }
-  puts("");
-  */
-  
+
+  puts("...Retrieving arrays from index");
   vector<int> SArr(n), Llcp(n), Rlcp(n), freq(sigma);
   decode(SArr, code, n * bytes, bytes);
 
@@ -58,13 +47,11 @@ void search(vector<string> &pats, string &idxfile) {
   decode(Rlcp, code + 2 * n * bytes, n * bytes, bytes);
   decode(freq, code + 3 * n * bytes, sigma * bytes, bytes);
   delete[] code;
-  for (int i = 0; i < Rlcp.size(); ++i) {
-    //printf("%d\n", Rlcp[i]);
-  }
-  char *txt = buildTxt(SArr, freq);
-  //printf("%s", txt);
-  printf("Elapsed DEC: %lf\n", (clock() - t) / CLOCKS_PER_SEC);
 
+  puts("...Building text");
+  char *txt = buildTxt(SArr, freq);
+
+  puts("...Searching");
   SuffixArray SA(SArr, Llcp, Rlcp, txt);
   t = clock();
   for (string &pat : pats) {
@@ -74,7 +61,8 @@ void search(vector<string> &pats, string &idxfile) {
     printf("Ocurrences of %s: %d\n", p, SA.search(p));
     delete[] p;
   }
-  printf("Elapsed Search: %lf\n", (clock() - t) / CLOCKS_PER_SEC);
+  printf("Time elapsed during search: %lfs\n", (clock() - t) / CLOCKS_PER_SEC);
+
   delete[] txt;
   fclose(file);
 }
@@ -94,8 +82,6 @@ static char *buildTxt(vector<int> &SArr, vector<int> freq) {
   int ptr = 0;
   for (int i = 0; i < m; ++i) {
     for (int j = 0; j < freq[i]; ++j) {
-      assert(ptr < n);
-      assert(SArr[ptr] < n);
       txt[SArr[ptr]] = i;
       ++ptr;
     }

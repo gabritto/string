@@ -2,7 +2,7 @@ OBJS = main.cpp util.o index.o search.o suffixarray.o aho.o lz77.o
 CC = g++
 CFLAGS = -c
 LFLAGS = 
-VFLAGS = -std=c++11 -O2 -g
+VFLAGS = -std=c++11 -O2
 
 all: main clean
 	

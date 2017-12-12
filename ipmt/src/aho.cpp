@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <cstring>
 #include <vector>
-#include <cstdio>
 using namespace std;
 
 static const int sigma = 256;
@@ -11,6 +10,7 @@ namespace aho {
 vector<int> alphabet_hash;
 static int getAlphabetHash(const char *pat, int l, int r);
 
+// builds aho-corasick fsm for string pat[l:r]
 vector<vector<int>> buildFSM(const char *pat, int l, int r) {
   int m = r - l;
   int alphabet_size = getAlphabetHash(pat, l, r);
@@ -36,7 +36,7 @@ vector<vector<int>> buildFSM(const char *pat, int l, int r) {
   return fsm;
 }
 
-// builds aho-corasick fsm for string pat[l:r]
+
 static int getAlphabetHash(const char *pat, int l, int r) {
   int i = 1;
   alphabet_hash.assign(sigma, 0);

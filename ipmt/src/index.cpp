@@ -1,5 +1,4 @@
 #include "index.hpp"
-#include <cassert>
 #include <cstdio>
 #include <string>
 #include <time.h>
@@ -26,23 +25,15 @@ sarr, llcp, rlcp, freq = codificacao
 
 void buildIndex(string txtfile) {
   char *txt = read(txtfile);
-  //printf("%d\n", strlen(txt));
+
+  puts("...Building suffix array");
   double t = clock();
   SuffixArray SA(txt);
-  printf("Elapsed SA: %lf\n", (clock() - t) / CLOCKS_PER_SEC);
+  printf("Time elapsed to build suffix array: %lfs\n", (clock() - t) / CLOCKS_PER_SEC);
 
-  //printf("vish\n");
+  puts("...Building index");
   vector<int> freq = countChars(txt);
-  /*for(auto v : SA.SArr) {
-    printf("%d ", v);
-  }
-  puts("");
-  for(int i = 0; i < freq.size(); ++i) {
-    if(freq[i] > 0) printf("(%c %d %d) ", i, i, freq[i]);
-  }
-  puts("");*/
 
-  // encode
   string idx_filename = txtfile.substr(0, txtfile.size() - 4) + ".idx";
   FILE *idxfile = fopen(idx_filename.c_str(), "wb");
   if (idxfile == NULL) {
@@ -63,24 +54,19 @@ void buildIndex(string txtfile) {
   fwrite(&la, sizeof(int), 1, idxfile);
 
   encode(code, SA.SArr, bytes);
-  for (int i = 0; i < SA.SArr.size(); ++i) {
-    //printf("%d\n", SA.SArr[i]);
-  }
-
   encode(code + n * bytes, SA.Llcp, bytes);
   encode(code + 2 * n * bytes, SA.Rlcp, bytes);
   encode(code + 3 * n * bytes, freq, bytes);
  
   char *compressed;
   int c_size;
-  FILE *out = fopen("../tests/az.idx_unc", "wb");
-  fwrite(code, sizeof(char), size, out);
-  return;
+
+  puts("...Compressing index");
   t = clock();
   tie(compressed, c_size) = lz77::encode(code, size, ls, la);
   fwrite(compressed, sizeof(char), c_size, idxfile);
-  printf("original:%d compressed:%d\n", size >> 10, c_size >> 10);
-  printf("Elapsed ENC: %lf\n", (clock() - t) / CLOCKS_PER_SEC);
+  printf("Time elapsed to compress: %lfs\n", (clock() - t) / CLOCKS_PER_SEC);
+
   fclose(idxfile);
   delete[] compressed;
   delete[] txt;
@@ -92,13 +78,11 @@ static void encode(char *dest, vector<int> &src, int bytes) {
   int ptr = 0;
   for (int i = 0; i < n; ++i) {
     string c = encodeInt(src[i], 8 * bytes);
-    assert(c.size() == bytes);
     for (int j = 0; j < bytes; ++j) {
       dest[ptr] = c[j];
       ++ptr;
     }
   }
-  assert(n * bytes == ptr);
 }
 
 static vector<int> countChars(char *txt) {

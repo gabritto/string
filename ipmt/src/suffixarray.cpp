@@ -1,10 +1,10 @@
 #include "suffixarray.hpp"
 #include <algorithm>
 #include <cstring>
-#include <iostream>
 #include <string>
 #include <tuple>
 #include <vector>
+
 using namespace std;
 
 static int ceilLog2(int n);
@@ -101,14 +101,14 @@ int SuffixArray::lcp(const char *u, const char *v) {
 
 int SuffixArray::succ(const char *pat) {  // succ is in (l, r]
   int m = (int)strlen(pat);
-  
+
   int L = lcp(pat, txt + SArr[0]), R = lcp(pat, txt + SArr[n - 1]);
-  if (L == m || (unsigned char) txt[SArr[0] + L] >
-                    (unsigned char) pat[L]) {  // txt[SArr[0]] >=m pat
+  if (L == m || (unsigned char)txt[SArr[0] + L] >
+                    (unsigned char)pat[L]) {  // txt[SArr[0]] >=m pat
     return 0;
   }
-  if (R < m && (unsigned char) txt[SArr[n - 1] + R] <
-                   (unsigned char) pat[R]) {  // txt[SArr[n - 1]] <m pat
+  if (R < m && (unsigned char)txt[SArr[n - 1] + R] <
+                   (unsigned char)pat[R]) {  // txt[SArr[n - 1]] <m pat
     return n;
   }
   int l = 0, r = n - 1;
@@ -128,7 +128,7 @@ int SuffixArray::succ(const char *pat) {  // succ is in (l, r]
         H = Rlcp[h];
       }
     }
-    if (H == m || (unsigned char)pat[H] < (unsigned char) txt[SArr[h] + H]) {
+    if (H == m || (unsigned char)pat[H] < (unsigned char)txt[SArr[h] + H]) {
       r = h;
       R = H;
     } else {
@@ -143,11 +143,11 @@ int SuffixArray::pred(const char *pat) {  // pred is in [l, r)
   int m = (int)strlen(pat);
   int L = lcp(pat, txt + SArr[0]), R = lcp(pat, txt + SArr[n - 1]);
   if (R == m || (unsigned char)txt[SArr[n - 1] + R] <
-                   (unsigned char) pat[R]) {  // txt[SArr[n - 1]] <=m pat
+                    (unsigned char)pat[R]) {  // txt[SArr[n - 1]] <=m pat
     return n - 1;
   }
   if (L < m && (unsigned char)txt[SArr[0] + L] >
-                   (unsigned char) pat[L]) {  // txt[SArr[0]] >m pat
+                   (unsigned char)pat[L]) {  // txt[SArr[0]] >m pat
     return -1;
   }
   int l = 0, r = n - 1;
@@ -167,7 +167,7 @@ int SuffixArray::pred(const char *pat) {  // pred is in [l, r)
         H = Rlcp[h];
       }
     }
-    if (H == m || (unsigned char) pat[H] > (unsigned char) txt[SArr[h] + H]) {
+    if (H == m || (unsigned char)pat[H] > (unsigned char)txt[SArr[h] + H]) {
       l = h;
       L = H;
     } else {
